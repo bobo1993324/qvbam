@@ -8,4 +8,6 @@ class ScreenArea : public QQuickPaintedItem {
 public:
     ScreenArea();
     void paint(QPainter *painter);
+public slots:
+    void ssetScale();
 };

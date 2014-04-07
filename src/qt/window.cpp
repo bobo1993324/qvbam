@@ -8,9 +8,45 @@ Window::Window() :
     m_iGBAScreenWidth (240),
     m_iGBAScreenHeight(160),
     m_eCartridge(CartridgeNone) {
+    vInitSDL();
     vInitSystem();
-    idleTimer.setInterval(10);
+
+    // Get config
+    //
+    struct passwd *pw = getpwuid(getuid());
+    const char *homedir = pw->pw_dir;
+    m_sUserDataDir = (QString(homedir)
+            + QString("/.local/share/com.ubuntu.developer.bobo1993324.qvbam/")
+            ).toStdString();
+    QDir qDir(QString::fromStdString(m_sUserDataDir));
+    if (!qDir.exists()) {
+        qDir.mkpath(QString::fromStdString(m_sUserDataDir));
+    }
+
+//    m_sConfigFile  = m_sUserDataDir + "/config";
+
+//    vInitConfig();
+
+//    if (Glib::file_test(m_sConfigFile, Glib::FILE_TEST_EXISTS))
+//    {
+//      vLoadConfig(m_sConfigFile);
+//      vCheckConfig();
+//    }
+//    else
+//    {
+//      vSaveConfig(m_sConfigFile);
+//    }
+
+
     vApplyConfigScreenArea();
+}
+
+Window::~Window() {
+    qDebug() << "~Windows called";
+    vOnFileClose();
+//    vUnInitSystem();
+//    vSaveJoypadsToConfig();
+//    vSaveConfig(m_sConfigFile);
 }
 
 bool Window::bLoadROM(const std::string &_rsFile) {
@@ -123,7 +159,7 @@ void Window::vOnFileClose() {
         vStopEmu();
         //        vSetDefaultTitle();
         //        vDrawDefaultScreen();
-        //        vSaveBattery();
+        vSaveBattery();
         //        vSaveCheats();
         m_stEmulator.emuCleanUp();
         m_eCartridge = CartridgeNone;
@@ -151,7 +187,14 @@ void Window::vApplyPerGameConfig() {
 }
 
 void Window::vLoadBattery() {
-    qDebug() << "TODO:: vLoadBattery" << endl;
+    std::string sBattery;
+    std::string sDir;
+    sDir = m_sUserDataDir;
+    sBattery = sDir + "/" + m_sRomFile + ".sav";
+    if (m_stEmulator.emuReadBattery(sBattery.c_str()))
+    {
+      systemScreenMessage("Loaded battery");
+    }
 }
 
 void Window::vUpdateScreen() {
@@ -218,40 +261,58 @@ void Window::vInitSystem()
 
 bool Window::bOnEmuIdle()
 {
-//    qDebug() << "Idle" ;
-    vSDLPollEvents();
+    //    qDebug() << "Idle" ;
+//    vSDLPollEvents();
 
     m_stEmulator.emuMain(m_stEmulator.emuCount);
-    idleTimer.singleShot(1, this, SLOT(bOnEmuIdle()));
+    idleTimer.singleShot(10, this, SLOT(bOnEmuIdle()));
     return true;
 }
 
 void Window::vSDLPollEvents()
 {
-    //TODO: configure joytick first
-    qDebug() << "TODO::vSDLPollEvents" << endl;
-    //    SDL_Event event;
-    //    while(SDL_PollEvent(&event))
-    //    {
-    //        switch(event.type)
-    //        {
-    //        case SDL_JOYHATMOTION:
-    //        case SDL_JOYBUTTONDOWN:
-    //        case SDL_JOYBUTTONUP:
-    //        case SDL_JOYAXISMOTION:
-    //        case SDL_KEYDOWN:
-    //        case SDL_KEYUP:
-    //            qDebug() << "input recieved";
-    //            inputProcessSDLEvent(event);
-    //            break;
-    //        }
-    //    }
+        SDL_Event event;
+        qDebug() << "Window::vSDLPollEvents";
+        while(SDL_PollEvent(&event))
+        {
+            switch(event.type)
+            {
+            case SDL_JOYHATMOTION:
+            case SDL_JOYBUTTONDOWN:
+            case SDL_JOYBUTTONUP:
+            case SDL_JOYAXISMOTION:
+            case SDL_KEYDOWN:
+            case SDL_KEYUP:
+                qDebug() << "input recieved";
+                inputProcessSDLEvent(event);
+                break;
+            }
+        }
 }
 
 void Window::vDrawScreen()
 {
     m_iFrameCount++;
     sDrawScreen();
+}
+
+bool Window::on_key_press_event(Qt::Key key) {
+    SDL_Event event;
+    event.type = SDL_KEYDOWN;
+    event.key.keysym.sym = (SDLKey)key;
+//    qDebug() << "SDLKey pressed " << key << event.key.keysym.sym << endl;
+    inputProcessSDLEvent(event);
+
+    return true;
+}
+
+bool Window::on_key_release_event(Qt::Key key) {
+//    qDebug() << "SDLKey on_key_release_event " << key << endl;
+    SDL_Event event;
+    event.type = SDL_KEYUP;
+    event.key.keysym.sym = (SDLKey)key;
+    inputProcessSDLEvent(event);
+    return true;
 }
 
 void Window::vApplyConfigScreenArea() {
@@ -261,48 +322,101 @@ void Window::vApplyConfigScreenArea() {
 void Window::vInitColors(EColorFormat _eColorFormat) {
     switch (_eColorFormat)
     {
-      case ColorFormatBGR:
-  #if G_BYTE_ORDER == G_LITTLE_ENDIAN
+    case ColorFormatBGR:
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
         systemRedShift    = 3;
         systemGreenShift  = 11;
         systemBlueShift   = 19;
         RGB_LOW_BITS_MASK = 0x00010101;
-  #else
+#else
         systemRedShift    = 27;
         systemGreenShift  = 19;
         systemBlueShift   = 11;
         RGB_LOW_BITS_MASK = 0x01010100;
-  #endif
+#endif
         break;
-      default:
-  #if G_BYTE_ORDER == G_LITTLE_ENDIAN
+    default:
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
         systemRedShift    = 19;
         systemGreenShift  = 11;
         systemBlueShift   = 3;
         RGB_LOW_BITS_MASK = 0x00010101;
-  #else
+#else
         systemRedShift    = 11;
         systemGreenShift  = 19;
         systemBlueShift   = 27;
         RGB_LOW_BITS_MASK = 0x01010100;
-  #endif
+#endif
         break;
     }
 
     for (int i = 0; i < 0x10000; i++)
     {
-      systemColorMap32[i] = (((i & 0x1f) << systemRedShift)
-                             | (((i & 0x3e0) >> 5) << systemGreenShift)
-                             | (((i & 0x7c00) >> 10) << systemBlueShift));
+        systemColorMap32[i] = (((i & 0x1f) << systemRedShift)
+                               | (((i & 0x3e0) >> 5) << systemGreenShift)
+                               | (((i & 0x7c00) >> 10) << systemBlueShift));
     }
 
     for (int i = 0; i < 24; )
     {
-      systemGbPalette[i++] = (0x1f) | (0x1f << 5) | (0x1f << 10);
-      systemGbPalette[i++] = (0x15) | (0x15 << 5) | (0x15 << 10);
-      systemGbPalette[i++] = (0x0c) | (0x0c << 5) | (0x0c << 10);
-      systemGbPalette[i++] = 0;
+        systemGbPalette[i++] = (0x1f) | (0x1f << 5) | (0x1f << 10);
+        systemGbPalette[i++] = (0x15) | (0x15 << 5) | (0x15 << 10);
+        systemGbPalette[i++] = (0x0c) | (0x0c << 5) | (0x0c << 10);
+        systemGbPalette[i++] = 0;
     }
 
     Init_2xSaI(32);
+}
+
+void Window::vInitSDL()
+{
+    static bool bDone = false;
+
+    if (bDone)
+        return;
+
+    int iFlags = (SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE);
+
+    if (SDL_Init(iFlags) < 0)
+    {
+        qDebug() << "Failed to init SDL: " << SDL_GetError();
+        abort();
+    }
+
+    inputSetKeymap(PAD_DEFAULT, KEY_LEFT, Qt::Key_Left);
+    inputSetKeymap(PAD_DEFAULT, KEY_RIGHT, Qt::Key_Right);
+    inputSetKeymap(PAD_DEFAULT, KEY_UP, Qt::Key_Up);
+    inputSetKeymap(PAD_DEFAULT, KEY_DOWN, Qt::Key_Down);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_A, Qt::Key_Z);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_B, Qt::Key_X);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_START, Qt::Key_Return);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_SELECT, Qt::Key_Backspace);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_L, Qt::Key_A);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_R, Qt::Key_S);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_SPEED, Qt::Key_Space);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_CAPTURE, Qt::Key_F12);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_AUTO_A, Qt::Key_Q);
+    inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_AUTO_B, Qt::Key_W);
+
+    // TODO : remove
+    int sdlNumDevices = SDL_NumJoysticks();
+    for (int i = 0; i < sdlNumDevices; i++)
+        SDL_JoystickOpen(i);
+
+    inputInitJoysticks();
+
+    bDone = true;
+}
+
+void Window::vSaveBattery() {
+    std::string sBattery;
+    std::string sDir;
+    sDir = m_sUserDataDir;
+
+    sBattery = sDir + "/" + m_sRomFile + ".sav";
+
+    if (m_stEmulator.emuWriteBattery(sBattery.c_str()))
+    {
+      systemScreenMessage("Saved battery");
+    }
 }

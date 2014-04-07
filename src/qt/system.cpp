@@ -20,7 +20,7 @@ Window * GUI() {
 
 void systemMessage(int _iId, const char * _csFormat, ...)
 {
-    qDebug() << "TODO:: systemMessage";
+    qDebug() << "TODO:: systemMessage" << _csFormat;
 //  va_list args;
 //  va_start(args, _csFormat);
 
@@ -98,6 +98,7 @@ bool systemReadJoypads()
 
 u32 systemReadJoypad(int joy)
 {
+//    qDebug() << "systemReadJoypad " << inputReadJoypad(joy) ;
   return inputReadJoypad(joy);
 }
 
@@ -143,10 +144,14 @@ void systemScreenCapture(int _iNum)
 
 void systemDrawScreen()
 {
-    qDebug() << "TODO::systemDrawScreen";
     GUI()->vDrawScreen();
 }
 
 void systemGbBorderOn()
 {
+}
+
+
+void systemScreenMessage(const char *msg) {
+    qDebug() << "TODO:: systemScreenMessage " << msg;
 }
