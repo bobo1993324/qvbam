@@ -8,7 +8,8 @@ Window::Window() :
     m_iGBAScreenWidth (240),
     m_iGBAScreenHeight(160),
     m_eCartridge(CartridgeNone) {
-    vInitSDL();
+    //SDLdoesn't work on TOUCH yet
+//    vInitSDL();
     vInitSystem();
 
     // Get config
