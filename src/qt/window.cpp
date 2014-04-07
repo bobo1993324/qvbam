@@ -9,7 +9,7 @@ Window::Window() :
     m_iGBAScreenHeight(160),
     m_eCartridge(CartridgeNone) {
     //SDLdoesn't work on TOUCH yet
-//    vInitSDL();
+    vInitSDL();
     vInitSystem();
 
     // Get config
@@ -378,11 +378,12 @@ void Window::vInitSDL()
 
     int iFlags = (SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE);
 
-    if (SDL_Init(iFlags) < 0)
-    {
-        qDebug() << "Failed to init SDL: " << SDL_GetError();
-        abort();
-    }
+    //Currently we don't need to init, or not with everything.
+//    if (SDL_Init(iFlags) < 0)
+//    {
+//        qDebug() << "Failed to init SDL: " << SDL_GetError();
+//        abort();
+//    }
 
     inputSetKeymap(PAD_DEFAULT, KEY_LEFT, Qt::Key_Left);
     inputSetKeymap(PAD_DEFAULT, KEY_RIGHT, Qt::Key_Right);
