@@ -21,7 +21,7 @@ int main(int argc, char ** argv) {
 
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->engine()->rootContext()->setContextProperty("iwindow", w);
-    qmlRegisterType<Squircle>("QVBA", 0, 1, "ScreenArea");
+    qmlRegisterType<ScreenArea>("QVBA", 0, 1, "ScreenArea");
     qmlRegisterUncreatableType<Window>("QVBA", 0, 1, "WINDOW", "hehe");
     view->setSource(QUrl::fromLocalFile("qml/main.qml"));
     view->show();
