@@ -10,10 +10,10 @@ Page {
         width: parent.width
         color: "black"
         ScreenArea {
+            anchors.centerIn: parent
+            width: 480
+            height: 320
             id: sa
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: width * 2 / 3
             Connections {
                 target: iwindow
                 onSDrawScreen: {

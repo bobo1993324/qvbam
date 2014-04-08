@@ -9,6 +9,16 @@ MainView {
         PlayPage {
             id: playPage
         }
-        Component.onCompleted: push(playPage)
+        Page{
+            id: blankPage
+            Rectangle {
+                anchors.fill: parent
+            }
+        }
+        Component.onCompleted: {
+
+            push(blankPage)
+            push(playPage)
+        }
     }
 }

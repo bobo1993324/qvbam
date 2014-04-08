@@ -1542,7 +1542,7 @@ std::string Window::sGetUiFilePath(const std::string &_sFileName)
   std::string sUiFile = "src/gtk/ui/" + _sFileName;
   if (!Glib::file_test(sUiFile, Glib::FILE_TEST_EXISTS))
   {
-    sUiFile = PKGDATADIR "/ui/" + _sFileName;
+    sUiFile =  "../src/gtk/ui/" + _sFileName;
   }
    
   return sUiFile;

@@ -268,7 +268,7 @@ bool Window::bOnEmuIdle()
 //    vSDLPollEvents();
 
     m_stEmulator.emuMain(m_stEmulator.emuCount);
-    idleTimer.singleShot(10, this, SLOT(bOnEmuIdle()));
+    idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
     return true;
 }
 

@@ -364,6 +364,7 @@ SET(SRC_QT
     src/sdl/inputSDL.cpp
     src/qt/ScreenArea.cpp
     src/qt/CustomQQuickView.cpp
+    src/qt/ScreenAreaOpenGL.cpp
 )
 
 if( ENABLE_DEBUGGER )
