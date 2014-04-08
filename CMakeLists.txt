@@ -33,6 +33,7 @@ endif(ENABLE_MMX)
 
 if(ENABLE_QT)
     set(ENABLE_GTK OFF)
+    set(ENABLE_SDL OFF)
 endif(ENABLE_QT)
 
 # The SDL port can't be built without debugging support
