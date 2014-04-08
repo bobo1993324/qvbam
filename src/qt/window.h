@@ -11,6 +11,7 @@
 #include <SDL_keysym.h>
 #include <pwd.h>
 #include <QDir>
+#include <QDateTime>
 
 #ifndef WINDOW
 #define WINDOW
@@ -42,6 +43,7 @@ public:
 
     Q_INVOKABLE bool on_key_press_event(Qt::Key key);
     Q_INVOKABLE bool on_key_release_event(Qt::Key key);
+    void vComputeFrameskip(int);
 public slots:
     bool bOnEmuIdle();
 
@@ -54,13 +56,14 @@ private:
     const int m_iGBAScreenWidth;
     const int m_iGBAScreenHeight;
 
-    std::string       m_sUserDataDir;
+    std::string     m_sUserDataDir;
 
-    std::string    m_sRomFile;
-    ECartridge     m_eCartridge;
-    EmulatedSystem m_stEmulator;
+    std::string     m_sRomFile;
+    ECartridge      m_eCartridge;
+    EmulatedSystem  m_stEmulator;
+    bool            m_bWasEmulating;
+    bool            m_bAutoFrameskip;
 
-    bool m_bWasEmulating;
     QTimer idleTimer;
 
     void vOnFileClose();
@@ -75,5 +78,6 @@ private:
     void vApplyConfigScreenArea();
     void vInitColors(EColorFormat _eColorFormat);
     void vSaveBattery();
+    void vApplyConfigFrameskip();
 };
 #endif

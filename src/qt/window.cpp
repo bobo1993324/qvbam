@@ -40,6 +40,7 @@ Window::Window() :
 
 
     vApplyConfigScreenArea();
+    vApplyConfigFrameskip();
 }
 
 Window::~Window() {
@@ -180,7 +181,8 @@ void Window::vOnFileClose() {
 }
 
 void Window::vStopEmu() {
-    qDebug() << "TODO:: stopEmu" << endl;
+    idleTimer.stop();
+    m_bWasEmulating = false;
 }
 
 void Window::vApplyPerGameConfig() {
@@ -376,7 +378,7 @@ void Window::vInitSDL()
     if (bDone)
         return;
 
-    int iFlags = (SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE);
+//    int iFlags = (SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE);
 
     //Currently we don't need to init, or not with everything.
 //    if (SDL_Init(iFlags) < 0)
@@ -420,5 +422,86 @@ void Window::vSaveBattery() {
     if (m_stEmulator.emuWriteBattery(sBattery.c_str()))
     {
       systemScreenMessage("Saved battery");
+    }
+}
+
+void Window::vComputeFrameskip(int _iRate) {
+    static QDateTime uiLastTime;
+    static int iFrameskipAdjust = 0;
+
+    QDateTime uiTime = QDateTime::currentDateTime();
+
+    if (m_bWasEmulating)
+    {
+      if (m_bAutoFrameskip)
+      {
+        int uiDiff = uiTime.toMSecsSinceEpoch() - uiLastTime.toMSecsSinceEpoch();
+        const int iWantedSpeed = 100;
+        int iSpeed = iWantedSpeed;
+
+        if (uiDiff != 0)
+        {
+          iSpeed = (1000000 / _iRate) / (uiDiff);
+        }
+
+        if (iSpeed >= iWantedSpeed - 2)
+        {
+          iFrameskipAdjust++;
+          if (iFrameskipAdjust >= 3)
+          {
+            iFrameskipAdjust = 0;
+            if (systemFrameSkip > 0)
+            {
+              systemFrameSkip--;
+            }
+          }
+        }
+        else
+        {
+          if (iSpeed < iWantedSpeed - 20)
+          {
+            iFrameskipAdjust -= ((iWantedSpeed - 10) - iSpeed) / 5;
+          }
+          else if (systemFrameSkip < 9)
+          {
+            iFrameskipAdjust--;
+          }
+
+          if (iFrameskipAdjust <= -4)
+          {
+            iFrameskipAdjust = 0;
+            if (systemFrameSkip < 9)
+            {
+              systemFrameSkip++;
+            }
+          }
+        }
+      }
+    }
+    else
+    {
+      m_bWasEmulating = true;
+    }
+    qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
+
+    uiLastTime = uiTime;
+}
+
+void Window::vApplyConfigFrameskip() {
+//    std::string sFrameskip = m_poCoreConfig->oGetKey<std::string>("frameskip");
+    std::string sFrameskip = "auto";
+    if (sFrameskip == "auto")
+    {
+      m_bAutoFrameskip = true;
+      gbFrameSkip      = 0;
+      systemFrameSkip  = 0;
+    }
+    else
+    {
+      m_bAutoFrameskip = false;
+      int iFrameskip = 0;
+//      int iFrameskip = m_poCoreConfig->oGetKey<int>("frameskip");
+      gbFrameSkip      = iFrameskip;
+      systemFrameSkip  = iFrameskip;
     }
 }

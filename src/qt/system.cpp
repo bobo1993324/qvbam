@@ -122,8 +122,7 @@ void systemFrame()
 
 void system10Frames(int _iRate)
 {
-    qDebug() << "TODO::system10Frames";
-//  GUI()->vComputeFrameskip(_iRate);
+  GUI()->vComputeFrameskip(_iRate);
 }
 
 void systemShowSpeed(int _iSpeed)
