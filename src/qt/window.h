@@ -12,6 +12,7 @@
 #include <pwd.h>
 #include <QDir>
 #include <QDateTime>
+#include <QFileInfo>
 
 #ifndef WINDOW
 #define WINDOW
@@ -41,6 +42,7 @@ public:
     bool bLoadROM(const std::string & _rsFile);
     void vDrawScreen();
 
+    Q_INVOKABLE bool bLoadRomInQML(QString fileName);
     Q_INVOKABLE bool on_key_press_event(Qt::Key key);
     Q_INVOKABLE bool on_key_release_event(Qt::Key key);
     void vComputeFrameskip(int);

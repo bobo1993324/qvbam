@@ -417,7 +417,7 @@ void Window::vSaveBattery() {
     std::string sDir;
     sDir = m_sUserDataDir;
 
-    sBattery = sDir + "/" + m_sRomFile + ".sav";
+    sBattery = sDir + "/" + QFileInfo(QString::fromStdString(m_sRomFile)).baseName().toStdString() + ".sav";
 
     if (m_stEmulator.emuWriteBattery(sBattery.c_str()))
     {
@@ -504,4 +504,8 @@ void Window::vApplyConfigFrameskip() {
       gbFrameSkip      = iFrameskip;
       systemFrameSkip  = iFrameskip;
     }
+}
+
+bool Window::bLoadRomInQML(QString fileName){
+    return bLoadROM(m_sUserDataDir + "/roms/" + fileName.toStdString());
 }

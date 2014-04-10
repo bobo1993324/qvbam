@@ -11,8 +11,9 @@ Page {
         color: "black"
         ScreenArea {
             anchors.centerIn: parent
-            width: 480
-            height: 320
+            property int scale : Math.min(parent.width / 240, parent.height / 160)
+            width: 241 * scale
+            height: 160 * scale
             id: sa
             Connections {
                 target: iwindow
