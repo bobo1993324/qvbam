@@ -1,0 +1,15 @@
+{
+    "name": "com.ubuntu.developer.bobo1993324.qvbam",
+    "description": "gba emulator",
+    "framework": "ubuntu-sdk-14.04-qml-dev1",
+    "architecture": "all",
+    "title": "QVBAM",
+    "hooks": {
+        "VBA-M": {
+            "apparmor": "VBA-M.json",
+            "desktop": "VBA-M.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Boren Zhang <bobo1993324@gmail.com>"
+}

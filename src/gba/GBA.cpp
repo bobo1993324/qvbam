@@ -1031,7 +1031,6 @@ bool CPUWriteBatteryFile(const char *fileName)
       break;
     }
   }
-    cout << "gbaSaveType " << gbaSaveType << " " << fileName << endl;
   if((gbaSaveType) && (gbaSaveType!=5)) {
     FILE *file = fopen(fileName, "wb");
 

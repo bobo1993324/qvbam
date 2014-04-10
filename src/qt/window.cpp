@@ -267,7 +267,6 @@ void Window::vInitSystem()
 
 bool Window::bOnEmuIdle()
 {
-    //    qDebug() << "Idle" ;
     //    vSDLPollEvents();
     if (emulating) {
         m_stEmulator.emuMain(m_stEmulator.emuCount);
@@ -307,14 +306,12 @@ bool Window::on_key_press_event(Qt::Key key) {
     SDL_Event event;
     event.type = SDL_KEYDOWN;
     event.key.keysym.sym = (SDLKey)key;
-    //    qDebug() << "SDLKey pressed " << key << event.key.keysym.sym << endl;
     inputProcessSDLEvent(event);
 
     return true;
 }
 
 bool Window::on_key_release_event(Qt::Key key) {
-    //    qDebug() << "SDLKey on_key_release_event " << key << endl;
     SDL_Event event;
     event.type = SDL_KEYUP;
     event.key.keysym.sym = (SDLKey)key;
@@ -406,7 +403,6 @@ void Window::vInitSDL()
     inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_AUTO_A, Qt::Key_Q);
     inputSetKeymap(PAD_DEFAULT, KEY_BUTTON_AUTO_B, Qt::Key_W);
 
-    // TODO : remove
     int sdlNumDevices = SDL_NumJoysticks();
     for (int i = 0; i < sdlNumDevices; i++)
         SDL_JoystickOpen(i);
@@ -431,6 +427,15 @@ void Window::vSaveBattery() {
 
 QObject * Window::config() {
     return m_config;
+}
+int Window::speed() {
+    return m_speed;
+}
+void Window::setspeed(int s) {
+    if (s != m_speed) {
+        m_speed = s;
+        emit speedChanged();
+    }
 }
 
 void Window::vComputeFrameskip(int _iRate) {
@@ -490,7 +495,7 @@ void Window::vComputeFrameskip(int _iRate) {
     {
         m_bWasEmulating = true;
     }
-    qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
+//    qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
 
     uiLastTime = uiTime;
 }

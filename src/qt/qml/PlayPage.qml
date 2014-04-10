@@ -22,6 +22,14 @@ Page {
                 }
             }
         }
+        Label {
+            anchors {
+                right: parent.right
+                top: parent.top
+            }
+            visible: topPage.configShowSpeed
+            text: "Speed: " + iwindow.speed + "%"
+        }
     }
     Image {
         id: buttonBackground

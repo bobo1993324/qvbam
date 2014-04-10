@@ -3,6 +3,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 Tabs {
     id: tabs
+    property alias configShowSpeed: showSpeedSwitch.checked
     Tab {
         id: romTab
         title: "Load Roms"
@@ -35,6 +36,13 @@ Tabs {
                         onCheckedChanged: {
                             iwindow.config.mute = !checked
                         }
+                    }
+                }
+                ListItem.Standard {
+                    text: "Show speed"
+                    control: Switch {
+                        id: showSpeedSwitch
+                        checked: true
                     }
                 }
             }

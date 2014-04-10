@@ -20,6 +20,7 @@
 class Window : public QObject {
     Q_OBJECT
     Q_PROPERTY(QObject * config READ config)
+    Q_PROPERTY(int speed READ speed NOTIFY speedChanged)
 public:
 
     int m_iScreenWidth;
@@ -50,6 +51,8 @@ public:
     Q_INVOKABLE void vOnFileClose();
 
     QObject * config();
+    int speed();
+    void setspeed(int);
 
 public slots:
     bool bOnEmuIdle();
@@ -57,6 +60,7 @@ public slots:
 
 signals:
     void sDrawScreen();
+    void speedChanged();
 
 private:
     int m_iFrameCount;
@@ -74,6 +78,7 @@ private:
 
     QTimer idleTimer;
     Config * m_config;
+    int m_speed;
 
     void vStopEmu();
     void vApplyPerGameConfig();
