@@ -20,4 +20,11 @@ MainView {
         id: topPage
         visible: false
     }
+    focus: true
+    Keys.onPressed: {
+        iwindow.on_key_press_event(event.key);
+    }
+    Keys.onReleased: {
+        iwindow.on_key_release_event(event.key);
+    }
 }

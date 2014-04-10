@@ -47,8 +47,10 @@ public:
     Q_INVOKABLE bool on_key_press_event(Qt::Key key);
     Q_INVOKABLE bool on_key_release_event(Qt::Key key);
     void vComputeFrameskip(int);
+    Q_INVOKABLE void vOnFileClose();
 
     QObject * config();
+
 public slots:
     bool bOnEmuIdle();
     void vApplyConfigMute();
@@ -73,7 +75,6 @@ private:
     QTimer idleTimer;
     Config * m_config;
 
-    void vOnFileClose();
     void vStopEmu();
     void vApplyPerGameConfig();
     void vLoadBattery();

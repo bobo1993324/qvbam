@@ -64,6 +64,18 @@ Page {
 				}
             }
         }
-    }
 
+    }
+    tools: ToolbarItems {
+        back: ToolbarButton {
+            action: Action {
+                text: "Close"
+                iconSource: "./img/close.svg"
+                onTriggered: {
+                    pageStack.pop();
+                    iwindow.vOnFileClose();
+                }
+            }
+        }
+    }
 }

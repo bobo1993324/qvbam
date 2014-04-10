@@ -269,9 +269,10 @@ bool Window::bOnEmuIdle()
 {
     //    qDebug() << "Idle" ;
     //    vSDLPollEvents();
-
-    m_stEmulator.emuMain(m_stEmulator.emuCount);
-    idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
+    if (emulating) {
+        m_stEmulator.emuMain(m_stEmulator.emuCount);
+        idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
+    }
     return true;
 }
 
