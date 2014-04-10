@@ -196,7 +196,7 @@ void Window::vLoadBattery() {
     std::string sBattery;
     std::string sDir;
     sDir = m_sUserDataDir;
-    sBattery = sDir + "/" + m_sRomFile + ".sav";
+    sBattery = sDir + "/" + QFileInfo(QString::fromStdString(m_sRomFile)).baseName().toStdString() + ".sav";
     if (m_stEmulator.emuReadBattery(sBattery.c_str()))
     {
         systemScreenMessage("Loaded battery");
