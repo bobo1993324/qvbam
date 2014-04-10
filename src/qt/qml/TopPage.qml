@@ -32,6 +32,9 @@ Tabs {
                     control: Switch {
                         id: enableSoundSwitch
                         checked: true
+                        onCheckedChanged: {
+                            iwindow.config.mute = !checked
+                        }
                     }
                 }
             }

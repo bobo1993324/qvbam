@@ -366,6 +366,7 @@ SET(SRC_QT
     src/qt/CustomQQuickView.cpp
     src/qt/ScreenAreaOpenGL.cpp
     src/qt/FilesModel.cpp
+    src/qt/Config.cpp
 )
 
 if( ENABLE_DEBUGGER )

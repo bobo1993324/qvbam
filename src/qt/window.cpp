@@ -8,6 +8,8 @@ Window::Window() :
     m_iGBAScreenWidth (240),
     m_iGBAScreenHeight(160),
     m_eCartridge(CartridgeNone) {
+    m_config = new Config();
+    connect(m_config, SIGNAL(muteChanged()), this, SLOT(vApplyConfigMute()));
     //SDLdoesn't work on TOUCH yet
     vInitSDL();
     vInitSystem();
@@ -17,38 +19,39 @@ Window::Window() :
     struct passwd *pw = getpwuid(getuid());
     const char *homedir = pw->pw_dir;
     m_sUserDataDir = (QString(homedir)
-            + QString("/.local/share/com.ubuntu.developer.bobo1993324.qvbam/")
-            ).toStdString();
+                      + QString("/.local/share/com.ubuntu.developer.bobo1993324.qvbam/")
+                      ).toStdString();
     QDir qDir(QString::fromStdString(m_sUserDataDir));
     if (!qDir.exists()) {
         qDir.mkpath(QString::fromStdString(m_sUserDataDir));
     }
 
-//    m_sConfigFile  = m_sUserDataDir + "/config";
+    //    m_sConfigFile  = m_sUserDataDir + "/config";
 
-//    vInitConfig();
+    //    vInitConfig();
 
-//    if (Glib::file_test(m_sConfigFile, Glib::FILE_TEST_EXISTS))
-//    {
-//      vLoadConfig(m_sConfigFile);
-//      vCheckConfig();
-//    }
-//    else
-//    {
-//      vSaveConfig(m_sConfigFile);
-//    }
+    //    if (Glib::file_test(m_sConfigFile, Glib::FILE_TEST_EXISTS))
+    //    {
+    //      vLoadConfig(m_sConfigFile);
+    //      vCheckConfig();
+    //    }
+    //    else
+    //    {
+    //      vSaveConfig(m_sConfigFile);
+    //    }
 
 
     vApplyConfigScreenArea();
+    vApplyConfigMute();
     vApplyConfigFrameskip();
 }
 
 Window::~Window() {
     qDebug() << "~Windows called";
     vOnFileClose();
-//    vUnInitSystem();
-//    vSaveJoypadsToConfig();
-//    vSaveConfig(m_sConfigFile);
+    //    vUnInitSystem();
+    //    vSaveJoypadsToConfig();
+    //    vSaveConfig(m_sConfigFile);
 }
 
 bool Window::bLoadROM(const std::string &_rsFile) {
@@ -196,7 +199,7 @@ void Window::vLoadBattery() {
     sBattery = sDir + "/" + m_sRomFile + ".sav";
     if (m_stEmulator.emuReadBattery(sBattery.c_str()))
     {
-      systemScreenMessage("Loaded battery");
+        systemScreenMessage("Loaded battery");
     }
 }
 
@@ -265,7 +268,7 @@ void Window::vInitSystem()
 bool Window::bOnEmuIdle()
 {
     //    qDebug() << "Idle" ;
-//    vSDLPollEvents();
+    //    vSDLPollEvents();
 
     m_stEmulator.emuMain(m_stEmulator.emuCount);
     idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
@@ -274,23 +277,23 @@ bool Window::bOnEmuIdle()
 
 void Window::vSDLPollEvents()
 {
-        SDL_Event event;
-        qDebug() << "Window::vSDLPollEvents";
-        while(SDL_PollEvent(&event))
+    SDL_Event event;
+    qDebug() << "Window::vSDLPollEvents";
+    while(SDL_PollEvent(&event))
+    {
+        switch(event.type)
         {
-            switch(event.type)
-            {
-            case SDL_JOYHATMOTION:
-            case SDL_JOYBUTTONDOWN:
-            case SDL_JOYBUTTONUP:
-            case SDL_JOYAXISMOTION:
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
-                qDebug() << "input recieved";
-                inputProcessSDLEvent(event);
-                break;
-            }
+        case SDL_JOYHATMOTION:
+        case SDL_JOYBUTTONDOWN:
+        case SDL_JOYBUTTONUP:
+        case SDL_JOYAXISMOTION:
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            qDebug() << "input recieved";
+            inputProcessSDLEvent(event);
+            break;
         }
+    }
 }
 
 void Window::vDrawScreen()
@@ -303,14 +306,14 @@ bool Window::on_key_press_event(Qt::Key key) {
     SDL_Event event;
     event.type = SDL_KEYDOWN;
     event.key.keysym.sym = (SDLKey)key;
-//    qDebug() << "SDLKey pressed " << key << event.key.keysym.sym << endl;
+    //    qDebug() << "SDLKey pressed " << key << event.key.keysym.sym << endl;
     inputProcessSDLEvent(event);
 
     return true;
 }
 
 bool Window::on_key_release_event(Qt::Key key) {
-//    qDebug() << "SDLKey on_key_release_event " << key << endl;
+    //    qDebug() << "SDLKey on_key_release_event " << key << endl;
     SDL_Event event;
     event.type = SDL_KEYUP;
     event.key.keysym.sym = (SDLKey)key;
@@ -378,14 +381,14 @@ void Window::vInitSDL()
     if (bDone)
         return;
 
-//    int iFlags = (SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE);
+    //    int iFlags = (SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE);
 
     //Currently we don't need to init, or not with everything.
-//    if (SDL_Init(iFlags) < 0)
-//    {
-//        qDebug() << "Failed to init SDL: " << SDL_GetError();
-//        abort();
-//    }
+    //    if (SDL_Init(iFlags) < 0)
+    //    {
+    //        qDebug() << "Failed to init SDL: " << SDL_GetError();
+    //        abort();
+    //    }
 
     inputSetKeymap(PAD_DEFAULT, KEY_LEFT, Qt::Key_Left);
     inputSetKeymap(PAD_DEFAULT, KEY_RIGHT, Qt::Key_Right);
@@ -421,8 +424,12 @@ void Window::vSaveBattery() {
 
     if (m_stEmulator.emuWriteBattery(sBattery.c_str()))
     {
-      systemScreenMessage("Saved battery");
+        systemScreenMessage("Saved battery");
     }
+}
+
+QObject * Window::config() {
+    return m_config;
 }
 
 void Window::vComputeFrameskip(int _iRate) {
@@ -433,54 +440,54 @@ void Window::vComputeFrameskip(int _iRate) {
 
     if (m_bWasEmulating)
     {
-      if (m_bAutoFrameskip)
-      {
-        int uiDiff = uiTime.toMSecsSinceEpoch() - uiLastTime.toMSecsSinceEpoch();
-        const int iWantedSpeed = 100;
-        int iSpeed = iWantedSpeed;
-
-        if (uiDiff != 0)
+        if (m_bAutoFrameskip)
         {
-          iSpeed = (1000000 / _iRate) / (uiDiff);
-        }
+            int uiDiff = uiTime.toMSecsSinceEpoch() - uiLastTime.toMSecsSinceEpoch();
+            const int iWantedSpeed = 100;
+            int iSpeed = iWantedSpeed;
 
-        if (iSpeed >= iWantedSpeed - 2)
-        {
-          iFrameskipAdjust++;
-          if (iFrameskipAdjust >= 3)
-          {
-            iFrameskipAdjust = 0;
-            if (systemFrameSkip > 0)
+            if (uiDiff != 0)
             {
-              systemFrameSkip--;
+                iSpeed = (1000000 / _iRate) / (uiDiff);
             }
-          }
-        }
-        else
-        {
-          if (iSpeed < iWantedSpeed - 20)
-          {
-            iFrameskipAdjust -= ((iWantedSpeed - 10) - iSpeed) / 5;
-          }
-          else if (systemFrameSkip < 9)
-          {
-            iFrameskipAdjust--;
-          }
 
-          if (iFrameskipAdjust <= -4)
-          {
-            iFrameskipAdjust = 0;
-            if (systemFrameSkip < 9)
+            if (iSpeed >= iWantedSpeed - 2)
             {
-              systemFrameSkip++;
+                iFrameskipAdjust++;
+                if (iFrameskipAdjust >= 3)
+                {
+                    iFrameskipAdjust = 0;
+                    if (systemFrameSkip > 0)
+                    {
+                        systemFrameSkip--;
+                    }
+                }
             }
-          }
+            else
+            {
+                if (iSpeed < iWantedSpeed - 20)
+                {
+                    iFrameskipAdjust -= ((iWantedSpeed - 10) - iSpeed) / 5;
+                }
+                else if (systemFrameSkip < 9)
+                {
+                    iFrameskipAdjust--;
+                }
+
+                if (iFrameskipAdjust <= -4)
+                {
+                    iFrameskipAdjust = 0;
+                    if (systemFrameSkip < 9)
+                    {
+                        systemFrameSkip++;
+                    }
+                }
+            }
         }
-      }
     }
     else
     {
-      m_bWasEmulating = true;
+        m_bWasEmulating = true;
     }
     qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
 
@@ -488,24 +495,37 @@ void Window::vComputeFrameskip(int _iRate) {
 }
 
 void Window::vApplyConfigFrameskip() {
-//    std::string sFrameskip = m_poCoreConfig->oGetKey<std::string>("frameskip");
+    //    std::string sFrameskip = m_poCoreConfig->oGetKey<std::string>("frameskip");
     std::string sFrameskip = "auto";
     if (sFrameskip == "auto")
     {
-      m_bAutoFrameskip = true;
-      gbFrameSkip      = 0;
-      systemFrameSkip  = 0;
+        m_bAutoFrameskip = true;
+        gbFrameSkip      = 0;
+        systemFrameSkip  = 0;
     }
     else
     {
-      m_bAutoFrameskip = false;
-      int iFrameskip = 0;
-//      int iFrameskip = m_poCoreConfig->oGetKey<int>("frameskip");
-      gbFrameSkip      = iFrameskip;
-      systemFrameSkip  = iFrameskip;
+        m_bAutoFrameskip = false;
+        int iFrameskip = 0;
+        //      int iFrameskip = m_poCoreConfig->oGetKey<int>("frameskip");
+        gbFrameSkip      = iFrameskip;
+        systemFrameSkip  = iFrameskip;
     }
 }
 
+void Window::vApplyConfigMute()
+{
+    qDebug() << "Window::vApplyConfigMute" ;
+    bool bMute = m_config->mute();
+    if (bMute)
+    {
+        soundSetEnable(0x000);
+    }
+    else
+    {
+        soundSetEnable(0x30f);
+    }
+}
 bool Window::bLoadRomInQML(QString fileName){
     return bLoadROM(m_sUserDataDir + "/roms/" + fileName.toStdString());
 }
