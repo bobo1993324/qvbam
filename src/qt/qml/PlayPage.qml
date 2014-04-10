@@ -42,22 +42,26 @@ Page {
             [0.128, 0.765, 0.211, 0.883, Qt.Key_Down],
             [0.214, 0.630, 0.279, 0.774, Qt.Key_Right]
         ]
-        property var lastKey;
-        MouseArea {
+        property var lastKeyStatus: [false, false, false, false, false, false, false, false, false, false]
+        
+        MultiPointTouchArea {
             anchors.fill: parent
-            onPressed: {
-                var xratio = mouse.x / width;
-                var yratio = mouse.y / height;
-                for (var i in buttonBackground.keyMap) {
-                    if (xratio > buttonBackground.keyMap[i][0] && xratio < buttonBackground.keyMap[i][2]
-                            && yratio > buttonBackground.keyMap[i][1] && yratio < buttonBackground.keyMap[i][3]) {
-                        iwindow.on_key_press_event(buttonBackground.keyMap[i][4]);
-                        buttonBackground.lastKey = buttonBackground.keyMap[i][4];
-                    }
-                }
-            }
-            onReleased: {
-                iwindow.on_key_release_event(buttonBackground.lastKey);
+            onTouchUpdated: {
+				for (var i in buttonBackground.lastKeyStatus) {
+           	        var pressed = false;
+					for (var j in touchPoints) {
+						if (touchPoints[j].x / width > buttonBackground.keyMap[i][0] &&  touchPoints[j].x / width < buttonBackground.keyMap[i][2] && touchPoints[j].y / height > buttonBackground.keyMap[i][1] && touchPoints[j].y / height < buttonBackground.keyMap[i][3])
+						pressed = true;
+					}
+					if (pressed != buttonBackground.lastKeyStatus[i]) {
+						if (pressed) {
+							iwindow.on_key_press_event(buttonBackground.keyMap[i][4]);
+						} else {
+							iwindow.on_key_release_event(buttonBackground.keyMap[i][4]);
+						}
+						buttonBackground.lastKeyStatus[i] = pressed;
+					}
+				}
             }
         }
     }
