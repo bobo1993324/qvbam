@@ -21,6 +21,7 @@ class Window : public QObject {
     Q_OBJECT
     Q_PROPERTY(QObject * config READ config)
     Q_PROPERTY(int speed READ speed NOTIFY speedChanged)
+    Q_PROPERTY(bool paused READ paused WRITE setPaused NOTIFY pausedChanged)
 public:
 
     int m_iScreenWidth;
@@ -50,9 +51,13 @@ public:
     void vComputeFrameskip(int);
     Q_INVOKABLE void vOnFileClose();
 
+    //qml get set function
     QObject * config();
     int speed();
     void setspeed(int);
+    bool paused();
+    void setPaused(bool);
+
 
 public slots:
     bool bOnEmuIdle();
@@ -60,7 +65,10 @@ public slots:
 
 signals:
     void sDrawScreen();
+
+    //qmlsignals
     void speedChanged();
+    void pausedChanged();
 
 private:
     int m_iFrameCount;
@@ -79,6 +87,8 @@ private:
     QTimer idleTimer;
     Config * m_config;
     int m_speed;
+    bool m_idleTimerRunning;
+    bool m_bPaused;
 
     void vStopEmu();
     void vApplyPerGameConfig();
@@ -92,6 +102,7 @@ private:
     void vInitColors(EColorFormat _eColorFormat);
     void vSaveBattery();
     void vApplyConfigFrameskip();
+    void vOnFilePauseToggled();
 
 };
 #endif

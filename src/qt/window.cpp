@@ -178,13 +178,12 @@ void Window::vOnFileClose() {
         //      {
         //        (*it)->set_sensitive(false);
         //      }
-
-        //      m_poFilePauseItem->set_active(false);
+        setPaused(false);
     }
 }
 
 void Window::vStopEmu() {
-    idleTimer.stop();
+    m_idleTimerRunning = false;
     m_bWasEmulating = false;
 }
 
@@ -248,6 +247,7 @@ void Window::vUpdateScreen() {
 }
 
 void Window::vStartEmu() {
+    m_idleTimerRunning = true;
     idleTimer.singleShot(1, this, SLOT(bOnEmuIdle()));
 }
 
@@ -268,7 +268,7 @@ void Window::vInitSystem()
 bool Window::bOnEmuIdle()
 {
     //    vSDLPollEvents();
-    if (emulating) {
+    if (m_idleTimerRunning) {
         m_stEmulator.emuMain(m_stEmulator.emuCount);
         idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
     }
@@ -437,6 +437,14 @@ void Window::setspeed(int s) {
         emit speedChanged();
     }
 }
+bool Window::paused() {
+    return m_bPaused;
+}
+void Window::setPaused(bool p) {
+    m_bPaused = p;
+    vOnFilePauseToggled();
+    emit pausedChanged();
+}
 
 void Window::vComputeFrameskip(int _iRate) {
     static QDateTime uiLastTime;
@@ -495,7 +503,7 @@ void Window::vComputeFrameskip(int _iRate) {
     {
         m_bWasEmulating = true;
     }
-//    qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
+    //    qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
 
     uiLastTime = uiTime;
 }
@@ -532,6 +540,24 @@ void Window::vApplyConfigMute()
         soundSetEnable(0x30f);
     }
 }
+
 bool Window::bLoadRomInQML(QString fileName){
     return bLoadROM(m_sUserDataDir + "/roms/" + fileName.toStdString());
+}
+
+void Window::vOnFilePauseToggled()
+{
+    if (emulating)
+    {
+        if (m_bPaused)
+        {
+            vStopEmu();
+            soundPause();
+        }
+        else
+        {
+            vStartEmu();
+            soundResume();
+        }
+    }
 }

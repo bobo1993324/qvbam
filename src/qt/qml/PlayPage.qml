@@ -85,5 +85,14 @@ Page {
                 }
             }
         }
+        ToolbarButton {
+            action: Action {
+                text: iwindow.paused ? "Resume" : "Pause"
+                iconSource: iwindow.paused ? "./img/media-playback-start.svg" : "./img/media-playback-pause.svg"
+                onTriggered: {
+                    iwindow.paused = !iwindow.paused;
+                }
+            }
+        }
     }
 }
