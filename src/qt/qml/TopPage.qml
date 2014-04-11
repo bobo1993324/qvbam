@@ -19,6 +19,12 @@ Tabs {
                     }
                 }
             }
+            Label {
+                visible: romsModel.files.length == 0
+                anchors.bottom: parent.bottom
+                text: "Put rom file in ~/.local/share/com.ubuntu.developer\n.bobo1993324.qvbam/roms/"
+                wrapMode: TextEdit.WordWrap
+            }
         }
     }
 
