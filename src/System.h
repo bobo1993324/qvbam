@@ -56,7 +56,7 @@ extern u32 systemGetClock();
 extern void systemMessage(int, const char *, ...);
 extern void systemSetTitle(const char *);
 extern SoundDriver * systemSoundInit();
-extern void systemOnWriteDataToSoundBuffer(u16 *finalWave, int length);
+extern void systemOnWriteDataToSoundBuffer(const u16 *finalWave, int length);
 extern void systemOnSoundShutdown();
 extern void systemScreenMessage(const char *);
 extern void systemUpdateMotionSensor();

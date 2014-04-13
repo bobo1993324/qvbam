@@ -273,7 +273,8 @@ bool Window::bOnEmuIdle()
         t.start();
         m_stEmulator.emuMain(m_stEmulator.emuCount);
 //        qDebug("Time elapsed: %d ms", t.elapsed());
-        idleTimer.singleShot(10 - t.elapsed(), this, SLOT(bOnEmuIdle()));
+        int elapsed = t.elapsed();
+        idleTimer.singleShot(std::max(10 - elapsed, 0), this, SLOT(bOnEmuIdle()));
     }
     return true;
 }
