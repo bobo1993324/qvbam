@@ -269,8 +269,11 @@ bool Window::bOnEmuIdle()
 {
     //    vSDLPollEvents();
     if (m_idleTimerRunning) {
+        QTime t;
+        t.start();
         m_stEmulator.emuMain(m_stEmulator.emuCount);
-        idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
+//        qDebug("Time elapsed: %d ms", t.elapsed());
+        idleTimer.singleShot(12 - t.elapsed(), this, SLOT(bOnEmuIdle()));
     }
     return true;
 }
@@ -503,7 +506,7 @@ void Window::vComputeFrameskip(int _iRate) {
     {
         m_bWasEmulating = true;
     }
-    //    qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
+        qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
 
     uiLastTime = uiTime;
 }

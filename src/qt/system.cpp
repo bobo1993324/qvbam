@@ -80,7 +80,8 @@ SoundDriver * systemSoundInit()
 {
     soundShutdown();
 
-    return new SoundSDL();
+//    return new SoundSDL();
+    return new SoundQt();
 }
 
 void systemOnSoundShutdown()

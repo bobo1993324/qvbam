@@ -367,6 +367,7 @@ SET(SRC_QT
     src/qt/ScreenAreaOpenGL.cpp
     src/qt/FilesModel.cpp
     src/qt/Config.cpp
+    src/qt/SoundQt.cpp
 )
 
 if( ENABLE_DEBUGGER )
@@ -480,6 +481,7 @@ IF(ENABLE_QT)
     find_package(Qt5Core)
     find_package(Qt5Quick)
     find_package(Qt5Gui)
+    find_package(Qt5Multimedia)
     add_executable(
         qvbam
         ${SRC_QT}
@@ -489,7 +491,7 @@ IF(ENABLE_QT)
         ${VBAMCORE_LIBS}
     )
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/qt/qml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-    qt5_use_modules(qvbam Core Quick Gui)
+    qt5_use_modules(qvbam Core Quick Gui Multimedia)
 endif(ENABLE_QT)
 
 IF( ENABLE_WX )

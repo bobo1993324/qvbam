@@ -4,3 +4,4 @@
 #include "../common/SoundSDL.h"
 #include "../sdl/inputSDL.h"
 #include "window.h"
+#include "SoundQt.h"
