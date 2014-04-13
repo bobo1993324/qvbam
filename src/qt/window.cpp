@@ -273,7 +273,7 @@ bool Window::bOnEmuIdle()
         t.start();
         m_stEmulator.emuMain(m_stEmulator.emuCount);
 //        qDebug("Time elapsed: %d ms", t.elapsed());
-        idleTimer.singleShot(12 - t.elapsed(), this, SLOT(bOnEmuIdle()));
+        idleTimer.singleShot(10 - t.elapsed(), this, SLOT(bOnEmuIdle()));
     }
     return true;
 }

@@ -1,4 +1,5 @@
 #include "system.h"
+
 int  systemRedShift;
 int  systemGreenShift;
 int  systemBlueShift;
@@ -88,8 +89,14 @@ void systemOnSoundShutdown()
 {
 }
 
-void systemOnWriteDataToSoundBuffer(const u16 * finalWave, int length)
+int missingSound = 0;
+extern SoundDriver * soundDriver;
+void systemOnWriteDataToSoundBuffer(u16 * finalWave, int length)
 {
+    while (missingSound > 0) {
+        soundDriver->write(finalWave, length);
+        missingSound --;
+    }
 }
 
 bool systemReadJoypads()
@@ -119,6 +126,7 @@ void systemFrame()
 void system10Frames(int _iRate)
 {
     GUI()->vComputeFrameskip(_iRate);
+    missingSound += systemFrameSkip;
 }
 
 void systemShowSpeed(int _iSpeed)
