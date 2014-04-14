@@ -81,33 +81,35 @@ SoundDriver * systemSoundInit()
 {
     soundShutdown();
 
-//    return new SoundSDL();
-    return new SoundQt();
+    return new SoundSDL();
+    // I tried to use QAudioOutput. It still has problem in confinement. There is a pluseaudio server that might solve the problem. Waiting for it to publish.
+    // Anyway, currently just not have sound in this version.
+//    return new SoundQt();
 }
 
 void systemOnSoundShutdown()
 {
 }
 
-int missingSound = 0;
-char * emptySound = 0;
-int emptySoundLength = 0;
-extern SoundDriver * soundDriver;
+//int missingSound = 0;
+//char * emptySound = 0;
+//int emptySoundLength = 0;
+//extern SoundDriver * soundDriver;
 void systemOnWriteDataToSoundBuffer(const u16 * finalWave, int length)
 {
-    if (emptySoundLength != 0 && emptySoundLength != length) {
-        delete emptySound;
-        emptySound = 0;
-    }
-    if (emptySound == 0) {
-        emptySound = new char[length];
-        emptySoundLength = length;
-        memset(emptySound, 0, emptySoundLength);
-    }
-    while (missingSound > 0) {
-        soundDriver->write((u16 *)emptySound, emptySoundLength);
-        missingSound --;
-    }
+//    if (emptySoundLength != 0 && emptySoundLength != length) {
+//        delete emptySound;
+//        emptySound = 0;
+//    }
+//    if (emptySound == 0) {
+//        emptySound = new char[length];
+//        emptySoundLength = length;
+//        memset(emptySound, 0, emptySoundLength);
+//    }
+//    while (missingSound > 0) {
+//        soundDriver->write((u16 *)emptySound, emptySoundLength);
+//        missingSound --;
+//    }
 }
 
 bool systemReadJoypads()
@@ -137,7 +139,7 @@ void systemFrame()
 void system10Frames(int _iRate)
 {
     GUI()->vComputeFrameskip(_iRate);
-    missingSound += systemFrameSkip;
+//    missingSound += systemFrameSkip;
 }
 
 void systemShowSpeed(int _iSpeed)
