@@ -274,7 +274,8 @@ bool Window::bOnEmuIdle()
         m_stEmulator.emuMain(m_stEmulator.emuCount);
 //        qDebug("Time elapsed: %d ms", t.elapsed());
         int elapsed = t.elapsed();
-        idleTimer.singleShot(std::max(10 - elapsed, 0), this, SLOT(bOnEmuIdle()));
+//        idleTimer.singleShot(std::max(10 - elapsed, 0), this, SLOT(bOnEmuIdle()));
+        idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
     }
     return true;
 }
@@ -507,7 +508,7 @@ void Window::vComputeFrameskip(int _iRate) {
     {
         m_bWasEmulating = true;
     }
-        qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
+//        qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
 
     uiLastTime = uiTime;
 }
