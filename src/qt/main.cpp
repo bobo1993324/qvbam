@@ -10,6 +10,7 @@
 #include "CustomQQuickView.h"
 #include "ScreenAreaOpenGL.h"
 #include "FilesModel.h"
+#include "QGameSlot.h"
 Window * w;
 CustomQQuickView * view;
 int main(int argc, char ** argv) {
@@ -25,6 +26,8 @@ int main(int argc, char ** argv) {
     view->engine()->rootContext()->setContextProperty("iwindow", w);
     qmlRegisterType<ScreenArea>("QVBA", 0, 1, "ScreenArea");
     qmlRegisterUncreatableType<Window>("QVBA", 0, 1, "WINDOW", "hehe");
+    qmlRegisterUncreatableType<QGameSlot>("QVBA", 0, 1, "QGameSlot", "hehe");
+
 
     view->setSource(QUrl::fromLocalFile("qml/main.qml"));
     view->show();

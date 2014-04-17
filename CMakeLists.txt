@@ -368,6 +368,7 @@ SET(SRC_QT
     src/qt/FilesModel.cpp
     src/qt/Config.cpp
     src/qt/SoundQt.cpp
+    src/qt/QGameSlot.cpp
 )
 
 if( ENABLE_DEBUGGER )

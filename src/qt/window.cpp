@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include <sys/stat.h>
+
 extern int RGB_LOW_BITS_MASK;
 
 int Init_2xSaI(u32);
@@ -9,6 +11,8 @@ Window::Window() :
     m_iGBAScreenHeight(160),
     m_eCartridge(CartridgeNone) {
     m_config = new Config();
+    for (int i = 0; i < 10; i++)
+        m_qGameSlotList.push_back(new QGameSlot());
     connect(m_config, SIGNAL(muteChanged()), this, SLOT(vApplyConfigMute()));
     //SDLdoesn't work on TOUCH yet
     vInitSDL();
@@ -137,7 +141,7 @@ bool Window::bLoadROM(const std::string &_rsFile) {
 
     //    vApplyConfigSoundSampleRate();
 
-    //    vUpdateGameSlots();
+    vUpdateGameSlots();
     //    vHistoryAdd(_rsFile);
 
     //    for (std::list<Gtk::Widget *>::iterator it = m_listSensitiveWhenPlaying.begin();
@@ -272,9 +276,9 @@ bool Window::bOnEmuIdle()
         QTime t;
         t.start();
         m_stEmulator.emuMain(m_stEmulator.emuCount);
-//        qDebug("Time elapsed: %d ms", t.elapsed());
+        //        qDebug("Time elapsed: %d ms", t.elapsed());
         int elapsed = t.elapsed();
-//        idleTimer.singleShot(std::max(10 - elapsed, 0), this, SLOT(bOnEmuIdle()));
+        //        idleTimer.singleShot(std::max(10 - elapsed, 0), this, SLOT(bOnEmuIdle()));
         idleTimer.singleShot(0, this, SLOT(bOnEmuIdle()));
     }
     return true;
@@ -451,6 +455,14 @@ void Window::setPaused(bool p) {
     emit pausedChanged();
 }
 
+int Window::frameSkip() {
+    return systemFrameSkip;
+}
+
+QQmlListProperty<QGameSlot> Window::gameSlot() {
+    return QQmlListProperty<QGameSlot>(this, m_qGameSlotList);
+}
+
 void Window::vComputeFrameskip(int _iRate) {
     static QDateTime uiLastTime;
     static int iFrameskipAdjust = 0;
@@ -479,6 +491,7 @@ void Window::vComputeFrameskip(int _iRate) {
                     if (systemFrameSkip > 0)
                     {
                         systemFrameSkip--;
+                        emit frameSkipChanged();
                     }
                 }
             }
@@ -499,6 +512,7 @@ void Window::vComputeFrameskip(int _iRate) {
                     if (systemFrameSkip < 9)
                     {
                         systemFrameSkip++;
+                        emit frameSkipChanged();
                     }
                 }
             }
@@ -508,7 +522,7 @@ void Window::vComputeFrameskip(int _iRate) {
     {
         m_bWasEmulating = true;
     }
-//        qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
+    //        qDebug() << "systemFrameSkip is " << systemFrameSkip << endl;
 
     uiLastTime = uiTime;
 }
@@ -565,4 +579,59 @@ void Window::vOnFilePauseToggled()
             soundResume();
         }
     }
+}
+
+void Window::vUpdateGameSlots() {
+    std::string sFileBase;
+    std::string sDir = m_sUserDataDir;
+
+    sFileBase = sDir + "/" + QFileInfo(QString::fromStdString(m_sRomFile)).baseName().toStdString();
+
+    const char * csDateFormat = "%Y/%m/%d %H:%M:%S";
+
+    for (int i = 0; i < 10; i++)
+    {
+        char csPrefix[10];
+        snprintf(csPrefix, sizeof(csPrefix), "%2d ", i + 1);
+
+        char csSlot[10];
+        snprintf(csSlot, sizeof(csSlot), "%d", i + 1);
+        m_astGameSlot[i].m_sFile = sFileBase + csSlot + ".sgm";
+
+        std::string sDateTime;
+        struct stat stStat;
+        if (stat(m_astGameSlot[i].m_sFile.c_str(), &stStat) == -1)
+        {
+            sDateTime = "----/--/-- --:--:--";
+            m_astGameSlot[i].m_bEmpty = true;
+        }
+        else
+        {
+            char csDateTime[30];
+            strftime(csDateTime, sizeof(csDateTime), csDateFormat,
+                     localtime(&stStat.st_mtime));
+            sDateTime = csDateTime;
+            m_astGameSlot[i].m_bEmpty = false;
+            m_astGameSlot[i].m_uiTime = stStat.st_mtime;
+        }
+        m_qGameSlotList[i]->setIsEmpty(m_astGameSlot[i].m_bEmpty);
+        m_qGameSlotList[i]->setTime(QString::fromStdString(csPrefix + sDateTime));
+    }
+}
+
+void Window::vOnSaveGame(int _iSlot)
+{
+  int i = _iSlot - 1;
+  m_stEmulator.emuWriteState(m_astGameSlot[i].m_sFile.c_str());
+  vUpdateGameSlots();
+}
+
+void Window::vOnLoadGame(int _iSlot)
+{
+  int i = _iSlot - 1;
+  if (! m_astGameSlot[i].m_bEmpty)
+  {
+    m_stEmulator.emuReadState(m_astGameSlot[i].m_sFile.c_str());
+    setPaused(false);
+  }
 }

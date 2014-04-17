@@ -1,7 +1,10 @@
 import QtQuick 2.0
 import QVBA 0.1
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItems
+import Ubuntu.Components.Popups 0.1
 Page {
+    property string slotAction
     Rectangle {
         anchors {
             top: parent.top
@@ -23,12 +26,21 @@ Page {
             }
         }
         Label {
+            id: speedLabel
             anchors {
                 right: parent.right
                 top: parent.top
             }
             visible: topPage.configShowSpeed
             text: "Speed: " + iwindow.speed + "%"
+        }
+        Label {
+            anchors {
+                right: parent.right
+                top: speedLabel.bottom
+            }
+            visible: topPage.configShowFrameSkip
+            text: "Frame Skip: " + iwindow.frameSkip
         }
     }
     Image {
@@ -55,21 +67,21 @@ Page {
         MultiPointTouchArea {
             anchors.fill: parent
             onTouchUpdated: {
-				for (var i in buttonBackground.lastKeyStatus) {
-           	        var pressed = false;
-					for (var j in touchPoints) {
-						if (touchPoints[j].x / width > buttonBackground.keyMap[i][0] &&  touchPoints[j].x / width < buttonBackground.keyMap[i][2] && touchPoints[j].y / height > buttonBackground.keyMap[i][1] && touchPoints[j].y / height < buttonBackground.keyMap[i][3])
-						pressed = true;
-					}
-					if (pressed != buttonBackground.lastKeyStatus[i]) {
-						if (pressed) {
-							iwindow.on_key_press_event(buttonBackground.keyMap[i][4]);
-						} else {
-							iwindow.on_key_release_event(buttonBackground.keyMap[i][4]);
-						}
-						buttonBackground.lastKeyStatus[i] = pressed;
-					}
-				}
+                for (var i in buttonBackground.lastKeyStatus) {
+                    var pressed = false;
+                    for (var j in touchPoints) {
+                        if (touchPoints[j].x / width > buttonBackground.keyMap[i][0] &&  touchPoints[j].x / width < buttonBackground.keyMap[i][2] && touchPoints[j].y / height > buttonBackground.keyMap[i][1] && touchPoints[j].y / height < buttonBackground.keyMap[i][3])
+                            pressed = true;
+                    }
+                    if (pressed != buttonBackground.lastKeyStatus[i]) {
+                        if (pressed) {
+                            iwindow.on_key_press_event(buttonBackground.keyMap[i][4]);
+                        } else {
+                            iwindow.on_key_release_event(buttonBackground.keyMap[i][4]);
+                        }
+                        buttonBackground.lastKeyStatus[i] = pressed;
+                    }
+                }
             }
         }
 
@@ -91,6 +103,49 @@ Page {
                 iconSource: iwindow.paused ? "./img/media-playback-start.svg" : "./img/media-playback-pause.svg"
                 onTriggered: {
                     iwindow.paused = !iwindow.paused;
+                }
+            }
+        }
+        ToolbarButton {
+            action: Action {
+                text: "Save Slot"
+                iconSource: "./img/save.svg"
+                onTriggered: {
+                    slotAction = "save";
+                    PopupUtils.open(slotSheet)
+                }
+            }
+        }
+        ToolbarButton {
+            action: Action {
+                text: "Load Slot"
+                iconSource: "./img/keyboard-caps.svg"
+                onTriggered: {
+                    slotAction = "load";
+                    PopupUtils.open(slotSheet)
+                }
+            }
+        }
+    }
+    Component {
+        id: slotSheet
+        DefaultSheet {
+            id: sheet
+            title: "Default sheet with done button"
+            doneButton: false
+            ListView {
+                anchors.fill: parent
+                model: iwindow.gameSlot
+                delegate: ListItems.Standard {
+                    text: model.isEmpty ? model.time : "<font color='purple'>" + model.time + "</font>"
+                    onClicked: {
+                        if (slotAction === "save") {
+                            iwindow.vOnSaveGame(model.index + 1);
+                        } else if (slotAction === "load") {
+                            iwindow.vOnLoadGame(model.index + 1);
+                        }
+                        PopupUtils.close(sheet);
+                    }
                 }
             }
         }

@@ -3,6 +3,11 @@
 #include <QTimer>
 #include <QAbstractEventDispatcher>
 #include <QString>
+#include <QDir>
+#include <QDateTime>
+#include <QFileInfo>
+#include <QQmlListProperty>
+
 #include "../gba/Sound.h"
 #include "../Util.h"
 #include "../gba/GBA.h"
@@ -10,10 +15,8 @@
 #include "../sdl/inputSDL.h"
 #include <SDL_keysym.h>
 #include <pwd.h>
-#include <QDir>
-#include <QDateTime>
-#include <QFileInfo>
 #include "Config.h"
+#include "QGameSlot.h"
 
 #ifndef WINDOW
 #define WINDOW
@@ -21,7 +24,16 @@ class Window : public QObject {
     Q_OBJECT
     Q_PROPERTY(QObject * config READ config)
     Q_PROPERTY(int speed READ speed NOTIFY speedChanged)
+    Q_PROPERTY(int frameSkip READ frameSkip NOTIFY frameSkipChanged)
     Q_PROPERTY(bool paused READ paused WRITE setPaused NOTIFY pausedChanged)
+    Q_PROPERTY(QQmlListProperty<QGameSlot> gameSlot READ gameSlot NOTIFY gameSlotChanged)
+    struct SGameSlot
+    {
+      bool        m_bEmpty;
+      std::string m_sFile;
+      time_t      m_uiTime;
+    };
+
 public:
 
     int m_iScreenWidth;
@@ -50,6 +62,8 @@ public:
     Q_INVOKABLE bool on_key_release_event(Qt::Key key);
     void vComputeFrameskip(int);
     Q_INVOKABLE void vOnFileClose();
+    Q_INVOKABLE void vOnSaveGame(int _iSlot);
+    Q_INVOKABLE void vOnLoadGame(int _iSlot);
 
     //qml get set function
     QObject * config();
@@ -57,6 +71,8 @@ public:
     void setspeed(int);
     bool paused();
     void setPaused(bool);
+    int frameSkip();
+    QQmlListProperty<QGameSlot> gameSlot();
 
 
 public slots:
@@ -69,6 +85,8 @@ signals:
     //qmlsignals
     void speedChanged();
     void pausedChanged();
+    void frameSkipChanged();
+    void gameSlotChanged();
 
 private:
     int m_iFrameCount;
@@ -83,12 +101,14 @@ private:
     EmulatedSystem  m_stEmulator;
     bool            m_bWasEmulating;
     bool            m_bAutoFrameskip;
+    SGameSlot       m_astGameSlot[10];
 
     QTimer idleTimer;
     Config * m_config;
     int m_speed;
     bool m_idleTimerRunning;
     bool m_bPaused;
+    QList<QGameSlot *> m_qGameSlotList;
 
     void vStopEmu();
     void vApplyPerGameConfig();
@@ -103,6 +123,7 @@ private:
     void vSaveBattery();
     void vApplyConfigFrameskip();
     void vOnFilePauseToggled();
+    void vUpdateGameSlots();
 
 };
 #endif

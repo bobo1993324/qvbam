@@ -4,6 +4,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Tabs {
     id: tabs
     property alias configShowSpeed: showSpeedSwitch.checked
+    property alias configShowFrameSkip: showFrameSkipSwitch.checked
     Tab {
         id: romTab
         title: "Load Roms"
@@ -34,20 +35,28 @@ Tabs {
         page: Page {
             Column {
                 width: parent.width
-                ListItem.Standard {
-                    text: "Enable Sound"
-                    control: Switch {
-                        id: enableSoundSwitch
-                        checked: true
-                        onCheckedChanged: {
-                            iwindow.config.mute = !checked
-                        }
-                    }
-                }
+                //sound doesn't work yet
+//                ListItem.Standard {
+//                    text: "Enable Sound"
+//                    control: Switch {
+//                        id: enableSoundSwitch
+//                        checked: true
+//                        onCheckedChanged: {
+//                            iwindow.config.mute = !checked
+//                        }
+//                    }
+//                }
                 ListItem.Standard {
                     text: "Show speed"
                     control: Switch {
                         id: showSpeedSwitch
+                        checked: true
+                    }
+                }
+                ListItem.Standard {
+                    text: "Show frame skip"
+                    control: Switch {
+                        id: showFrameSkipSwitch
                         checked: true
                     }
                 }
