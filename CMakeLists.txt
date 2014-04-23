@@ -493,6 +493,7 @@ IF(ENABLE_QT)
     )
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/qt/qml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     qt5_use_modules(qvbam Core Quick Gui Multimedia)
+
 endif(ENABLE_QT)
 
 IF( ENABLE_WX )
