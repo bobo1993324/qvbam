@@ -43,12 +43,13 @@ Page {
             text: "Frame Skip: " + iwindow.frameSkip
         }
     }
-    Image {
+    Rectangle {
         id: buttonBackground
         width: parent.width
         height: width * 434 / 725
         anchors.bottom: parent.bottom
-        source: "img/pad.png"
+//        source: "img/pad.png"
+        color: "#4E2865"
         //[startx, starty, endx, endy, key]
         property var keyMap: [
             [0.034, 0.086, 0.28, 0.26, Qt.Key_A], // L
@@ -57,10 +58,10 @@ Page {
             [0.674, 0.674, 0.815, 0.883, Qt.Key_X], // B
             [0.516, 0.743, 0.604, 0.882, Qt.Key_Return], //START
             [0.406, 0.743, 0.497, 0.882, Qt.Key_Backspace], //SELECT
-            [0.125, 0.512, 0.214, 0.626, Qt.Key_Up],
-            [0.065, 0.617, 0.128, 0.778, Qt.Key_Left],
-            [0.128, 0.765, 0.211, 0.883, Qt.Key_Down],
-            [0.214, 0.630, 0.279, 0.774, Qt.Key_Right]
+            [0.14, 0.4, 0.24, 0.55, Qt.Key_Up],
+            [0.07, 0.53, 0.138, 0.72, Qt.Key_Left],
+            [0.14, 0.71, 0.23, 0.84, Qt.Key_Down],
+            [0.23, 0.54, 0.31, 0.72, Qt.Key_Right]
         ]
         property var lastKeyStatus: [false, false, false, false, false, false, false, false, false, false]
         
@@ -84,7 +85,62 @@ Page {
                 }
             }
         }
+//        MouseArea {
+//            anchors.fill: parent
+//            onClicked: {
+//                console.log(mouse.x / width + " " + mouse.y / height)
+//            }
+//        }
 
+        Image {
+            source: "./img/LButton.png"
+            x: buttonBackground.keyMap[0][0] * parent.width
+            y: buttonBackground.keyMap[0][1] * parent.height
+            width: (buttonBackground.keyMap[0][2] - buttonBackground.keyMap[0][0]) * parent.width
+            height: (buttonBackground.keyMap[0][3] - buttonBackground.keyMap[0][1]) * parent.height
+        }
+        Image {
+            source: "./img/RButton.png"
+            x: buttonBackground.keyMap[1][0] * parent.width
+            y: buttonBackground.keyMap[1][1] * parent.height
+            width: (buttonBackground.keyMap[1][2] - buttonBackground.keyMap[1][0]) * parent.width
+            height: (buttonBackground.keyMap[1][3] - buttonBackground.keyMap[1][1]) * parent.height
+        }
+        Image {
+            source: "./img/AButton.png"
+            x: buttonBackground.keyMap[2][0] * parent.width
+            y: buttonBackground.keyMap[2][1] * parent.height
+            width: (buttonBackground.keyMap[2][2] - buttonBackground.keyMap[2][0]) * parent.width
+            height: (buttonBackground.keyMap[2][3] - buttonBackground.keyMap[2][1]) * parent.height
+        }
+        Image {
+            source: "./img/BButton.png"
+            x: buttonBackground.keyMap[3][0] * parent.width
+            y: buttonBackground.keyMap[3][1] * parent.height
+            width: (buttonBackground.keyMap[3][2] - buttonBackground.keyMap[3][0]) * parent.width
+            height: (buttonBackground.keyMap[3][3] - buttonBackground.keyMap[3][1]) * parent.height
+        }
+        Image {
+            source: "./img/circleButton.png"
+            x: buttonBackground.keyMap[4][0] * parent.width
+            y: buttonBackground.keyMap[4][1] * parent.height
+            width: (buttonBackground.keyMap[4][2] - buttonBackground.keyMap[4][0]) * parent.width
+            height: (buttonBackground.keyMap[4][3] - buttonBackground.keyMap[4][1]) * parent.height
+        }
+        Image {
+            source: "./img/circleButton.png"
+            x: buttonBackground.keyMap[5][0] * parent.width
+            y: buttonBackground.keyMap[5][1] * parent.height
+            width: (buttonBackground.keyMap[5][2] - buttonBackground.keyMap[5][0]) * parent.width
+            height: (buttonBackground.keyMap[5][3] - buttonBackground.keyMap[5][1]) * parent.height
+        }
+        Image {
+            source: "./img/directionButtons.png"
+            x: buttonBackground.keyMap[7][0] * parent.width
+            y: buttonBackground.keyMap[6][1] * parent.height
+            width: (buttonBackground.keyMap[9][2] - buttonBackground.keyMap[7][0]) * parent.width
+            height: (buttonBackground.keyMap[8][3] - buttonBackground.keyMap[6][1]) * parent.height
+        }
     }
     tools: ToolbarItems {
         back: ToolbarButton {
