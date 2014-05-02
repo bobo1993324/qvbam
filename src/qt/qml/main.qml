@@ -27,4 +27,14 @@ MainView {
     Keys.onReleased: {
         iwindow.on_key_release_event(event.key);
     }
+    Connections {
+        target: Qt.application
+        onActiveChanged: {
+            if (Qt.application.active) {
+                iwindow.paused = false;
+            } else {
+                iwindow.paused = true;
+            }
+        }
+    }
 }
