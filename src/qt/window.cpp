@@ -9,7 +9,8 @@ int Init_2xSaI(u32);
 Window::Window() :
     m_iGBAScreenWidth (240),
     m_iGBAScreenHeight(160),
-    m_eCartridge(CartridgeNone) {
+    m_eCartridge(CartridgeNone),
+    m_bPaused(false) {
     m_config = new Config();
     for (int i = 0; i < 10; i++)
         m_qGameSlotList.push_back(new QGameSlot());
@@ -450,9 +451,11 @@ bool Window::paused() {
     return m_bPaused;
 }
 void Window::setPaused(bool p) {
-    m_bPaused = p;
-    vOnFilePauseToggled();
-    emit pausedChanged();
+    if (p != m_bPaused) {
+        m_bPaused = p;
+        vOnFilePauseToggled();
+        emit pausedChanged();
+    }
 }
 
 int Window::frameSkip() {

@@ -187,7 +187,7 @@ Page {
         id: slotSheet
         DefaultSheet {
             id: sheet
-            title: "Default sheet with done button"
+            title: slotAction
             doneButton: false
             ListView {
                 anchors.fill: parent
