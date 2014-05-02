@@ -19,7 +19,8 @@ option( ENABLE_ASM_SCALERS "Enable x86 ASM graphic filters" OFF )
 option( ENABLE_LINK "Enable GBA linking functionality" OFF )
 option( ENABLE_LIRC "Enable LIRC support" OFF )
 option( ENABLE_FFMPEG "Enable ffmpeg A/V recording" OFF )
-option( ENABLE_QT "Enable the Qt GUI" OFF)
+option( ENABLE_QT "Enable the Qt GUI" ON)
+option( SDL_PATH "path for static SDL lib")
 if(ENABLE_ASM_SCALERS)
     option( ENABLE_MMX "Enable MMX" OFF )
 endif(ENABLE_ASM_SCALERS)
@@ -34,6 +35,9 @@ endif(ENABLE_MMX)
 if(ENABLE_QT)
     set(ENABLE_GTK OFF)
     set(ENABLE_SDL OFF)
+	if(NOT SDL_PATH)
+        message( SEND_ERROR "SDL static build path be given to build staticly" )
+	endif(NOT SDL_PATH)
 endif(ENABLE_QT)
 
 # The SDL port can't be built without debugging support
@@ -383,7 +387,8 @@ INCLUDE_DIRECTORIES(
     ${ZLIB_INCLUDE_DIR}
     fex
     ${PNG_INCLUDE_DIR}
-    ${SDL_INCLUDE_DIR}
+    #${SDL_INCLUDE_DIR}
+	${SDL_PATH}/include
 )
 
 IF( ENABLE_GTK )
@@ -489,7 +494,17 @@ IF(ENABLE_QT)
     )
     TARGET_LINK_LIBRARIES (
         qvbam
-        ${VBAMCORE_LIBS}
+		vbamcore
+	    fex
+	    "${SDL_PATH}/build/.libs/libSDL.a"
+		"${SDL_PATH}/build/.libs/libSDLmain.a"
+		"-ldl"
+	    "-pthread"
+	    ${SFML_LIBRARY}
+	    ${OPENGL_LIBRARIES}
+	    ${ZLIB_LIBRARY}
+	    ${PNG_LIBRARY}
+        #${VBAMCORE_LIBS}
     )
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/qt/qml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     qt5_use_modules(qvbam Core Quick Gui Multimedia)
