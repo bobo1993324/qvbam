@@ -13,8 +13,16 @@
 #include "QGameSlot.h"
 Window * w;
 CustomQQuickView * view;
+
+void sig_handler(int sig) {
+        qDebug() << "SIGINT CAUGHT";
+	w->vOnFileClose();
+        exit(0);
+}
 int main(int argc, char ** argv) {
-    qDebug() << "Hello vgba";
+    signal(SIGINT, sig_handler);
+    signal(SIGKILL, sig_handler);
+    signal(SIGTERM, sig_handler);
     QGuiApplication a(argc, argv);
     view = new CustomQQuickView();
 
