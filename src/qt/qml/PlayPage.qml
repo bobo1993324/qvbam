@@ -219,6 +219,7 @@ Page {
             ListView {
                 anchors.fill: parent
                 model: iwindow.gameSlot
+                clip: true
                 delegate: ListItems.Standard {
                     text: model.isEmpty ? model.time : "<font color='purple'>" + model.time + "</font>"
                     onClicked: {
