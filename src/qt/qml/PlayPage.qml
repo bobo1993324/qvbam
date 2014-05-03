@@ -5,10 +5,12 @@ import Ubuntu.Components.ListItems 0.1 as ListItems
 import Ubuntu.Components.Popups 0.1
 Page {
     property string slotAction
+    property bool isPortrait: width * 1.4 < height
+
     Rectangle {
         anchors {
             top: parent.top
-            bottom: buttonBackground.top
+            bottom: isPortrait ? buttonBackground.top : parent.bottom
         }
         width: parent.width
         color: "black"
@@ -48,10 +50,12 @@ Page {
         width: parent.width
         height: width * 434 / 725
         anchors.bottom: parent.bottom
-//        source: "img/pad.png"
-        color: "#4E2865"
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: isPortrait ? "#4E2865" : "transparent"
+        opacity: isPortrait ? 1.0 : 0.5
         //[startx, starty, endx, endy, key]
-        property var keyMap: [
+        property var keyMap: isPortrait ? portraitKeyMap : landscapeKeyMap
+        property var portraitKeyMap: [
             [0.034, 0.086, 0.28, 0.26, Qt.Key_A], // L
             [0.713, 0.086, 0.971, 0.26, Qt.Key_S], // R
             [0.805, 0.574, 0.943, 0.8, Qt.Key_Z], // A
@@ -62,9 +66,21 @@ Page {
             [0.07, 0.53, 0.138, 0.72, Qt.Key_Left],
             [0.14, 0.71, 0.23, 0.84, Qt.Key_Down],
             [0.23, 0.54, 0.31, 0.72, Qt.Key_Right]
-        ]
+        ] // portrait
+        property var landscapeKeyMap: [
+            [0.034, 0.086, 0.22, 0.20, Qt.Key_A], // L
+            [0.77, 0.086, 0.971, 0.20, Qt.Key_S], // R
+            [0.85, 0.64, 0.943, 0.8, Qt.Key_Z], // A
+            [0.76, 0.72, 0.855, 0.883, Qt.Key_X], // B
+            [0.55, 0.79, 0.604, 0.882, Qt.Key_Return], //START
+            [0.44, 0.79, 0.497, 0.882, Qt.Key_Backspace], //SELECT
+            [0.125, 0.58, 0.2, 0.68, Qt.Key_Up],
+            [0.07, 0.68, 0.128, 0.81, Qt.Key_Left],
+            [0.125, 0.79, 0.2, 0.89, Qt.Key_Down],
+            [0.19, 0.68, 0.25, 0.80, Qt.Key_Right]
+        ] // portrait
         property var lastKeyStatus: [false, false, false, false, false, false, false, false, false, false]
-        
+
         MultiPointTouchArea {
             anchors.fill: parent
             onTouchUpdated: {
@@ -85,6 +101,17 @@ Page {
                 }
             }
         }
+//        Repeater {
+//            model: buttonBackground.landscapeKeyMap
+//            delegate: Rectangle {
+//                x: buttonBackground.width * modelData[0]
+//                y: buttonBackground.height * modelData[1]
+//                width: buttonBackground.width * (modelData[2] - modelData[0])
+//                height: buttonBackground.height * (modelData[3] - modelData[1])
+//                color: "green"
+//            }
+//        }
+
 //        MouseArea {
 //            anchors.fill: parent
 //            onClicked: {
