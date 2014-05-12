@@ -36,16 +36,16 @@ Tabs {
             Column {
                 width: parent.width
                 //sound doesn't work yet
-//                ListItem.Standard {
-//                    text: "Enable Sound"
-//                    control: Switch {
-//                        id: enableSoundSwitch
-//                        checked: true
-//                        onCheckedChanged: {
-//                            iwindow.config.mute = !checked
-//                        }
-//                    }
-//                }
+                ListItem.Standard {
+                    text: "Enable Sound"
+                    control: Switch {
+                        id: enableSoundSwitch
+                        checked: true
+                        onCheckedChanged: {
+                            iwindow.config.mute = !checked
+                        }
+                    }
+                }
                 ListItem.Standard {
                     text: "Show speed"
                     control: Switch {
