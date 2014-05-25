@@ -76,26 +76,26 @@ Page {
                     for (var j in touchPoints) {
                         if (i < 6) {
                             if (buttonBackground.buttonsPositions[i][5] == "left") {
-                                if (mouse.x > units.gu(buttonBackground.buttonsPositions[i][1])
-                                        && mouse.x < units.gu(buttonBackground.buttonsPositions[i][1]) + units.gu(buttonBackground.buttonsPositions[i][3])
-                                        && mouse.y > height - units.gu(buttonBackground.buttonsPositions[i][2]) - units.gu(buttonBackground.buttonsPositions[i][4])
-                                        && mouse.y < height - units.gu(buttonBackground.buttonsPositions[i][2])) {
+                                if (touchPoints[j].x > units.gu(buttonBackground.buttonsPositions[i][1])
+                                        && touchPoints[j].x < units.gu(buttonBackground.buttonsPositions[i][1]) + units.gu(buttonBackground.buttonsPositions[i][3])
+                                        && touchPoints[j].y > height - units.gu(buttonBackground.buttonsPositions[i][2]) - units.gu(buttonBackground.buttonsPositions[i][4])
+                                        && touchPoints[j].y < height - units.gu(buttonBackground.buttonsPositions[i][2])) {
                                     pressed = true
                                 }
                             } else {
                                 //should be right
-                                if (mouse.x > width - units.gu(buttonBackground.buttonsPositions[i][1]) - units.gu(buttonBackground.buttonsPositions[i][3])
-                                        && mouse.x < width - units.gu(buttonBackground.buttonsPositions[i][1])
-                                        && mouse.y > height - units.gu(buttonBackground.buttonsPositions[i][2]) - units.gu(buttonBackground.buttonsPositions[i][4])
-                                        && mouse.y < height - units.gu(buttonBackground.buttonsPositions[i][2])) {
+                                if (touchPoints[j].x > width - units.gu(buttonBackground.buttonsPositions[i][1]) - units.gu(buttonBackground.buttonsPositions[i][3])
+                                        && touchPoints[j].x < width - units.gu(buttonBackground.buttonsPositions[i][1])
+                                        && touchPoints[j].y > height - units.gu(buttonBackground.buttonsPositions[i][2]) - units.gu(buttonBackground.buttonsPositions[i][4])
+                                        && touchPoints[j].y < height - units.gu(buttonBackground.buttonsPositions[i][2])) {
                                     pressed = true;
                                 }
                             }
                             if (pressed != buttonBackground.lastKeyStatus[i]) {
                                 if (pressed) {
-                                    iwindow.on_key_press_event(buttonBackground.buttonsPositions[i][7]);
+                                    iwindow.on_key_press_event(buttonBackground.buttonsPositions[i][6]);
                                 } else {
-                                    iwindow.on_key_release_event(buttonBackground.buttonsPositions[i][7]);
+                                    iwindow.on_key_release_event(buttonBackground.buttonsPositions[i][6]);
                                 }
                                 buttonBackground.lastKeyStatus[i] = pressed;
                             }
@@ -127,10 +127,10 @@ Page {
                                          directButtonY + (1 - buttonBackground.directRatio) * directButtonHeight,
                                          Qt.Key_Right]
                                     ]
-                            if (mouse.x > directButtonPosition[i - 6][0]
-                                    && mouse.x < directButtonPosition[i - 6][1]
-                                    && mouse.y > directButtonPosition[i - 6][2]
-                                    && mouse.y < directButtonPosition[i - 6][3]) {
+                            if (touchPoints[j].x > directButtonPosition[i - 6][0]
+                                    && touchPoints[j].x < directButtonPosition[i - 6][1]
+                                    && touchPoints[j].y > directButtonPosition[i - 6][2]
+                                    && touchPoints[j].y < directButtonPosition[i - 6][3]) {
                                 pressed = true;
                             }
                             if (pressed != buttonBackground.lastKeyStatus[i]) {
@@ -144,6 +144,7 @@ Page {
                         }
                     }
                 }
+				console.log(buttonBackground.lastKeyStatus);
             }
 
             //        MouseArea {
