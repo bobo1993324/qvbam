@@ -33,7 +33,7 @@ Page {
                 right: parent.right
                 top: parent.top
             }
-            visible: topPage.configShowSpeed
+            visible: settings.configShowSpeed
             text: "Speed: " + iwindow.speed + "%"
         }
         Label {
@@ -41,7 +41,7 @@ Page {
                 right: parent.right
                 top: speedLabel.bottom
             }
-            visible: topPage.configShowFrameSkip
+            visible: settings.configShowFrameSkip
             text: "Frame Skip: " + iwindow.frameSkip
         }
     }
@@ -54,31 +54,18 @@ Page {
         color: isPortrait ? "#4E2865" : "transparent"
         opacity: isPortrait ? 1.0 : 0.5
         //[startx, starty, endx, endy, key]
-        property var keyMap: isPortrait ? portraitKeyMap : landscapeKeyMap
-        property var portraitKeyMap: [
-            [0.034, 0.086, 0.28, 0.26, Qt.Key_A], // L
-            [0.713, 0.086, 0.971, 0.26, Qt.Key_S], // R
-            [0.805, 0.574, 0.943, 0.8, Qt.Key_Z], // A
-            [0.674, 0.674, 0.815, 0.883, Qt.Key_X], // B
-            [0.516, 0.743, 0.604, 0.882, Qt.Key_Return], //START
-            [0.406, 0.743, 0.497, 0.882, Qt.Key_Backspace], //SELECT
-            [0.14, 0.4, 0.24, 0.55, Qt.Key_Up],
-            [0.07, 0.53, 0.138, 0.72, Qt.Key_Left],
-            [0.14, 0.71, 0.23, 0.84, Qt.Key_Down],
-            [0.23, 0.54, 0.31, 0.72, Qt.Key_Right]
-        ] // portrait
-        property var landscapeKeyMap: [
-            [0.034, 0.086, 0.22, 0.20, Qt.Key_A], // L
-            [0.77, 0.086, 0.971, 0.20, Qt.Key_S], // R
-            [0.85, 0.64, 0.943, 0.8, Qt.Key_Z], // A
-            [0.76, 0.72, 0.855, 0.883, Qt.Key_X], // B
-            [0.55, 0.79, 0.604, 0.882, Qt.Key_Return], //START
-            [0.44, 0.79, 0.497, 0.882, Qt.Key_Backspace], //SELECT
-            [0.125, 0.58, 0.2, 0.68, Qt.Key_Up],
-            [0.07, 0.68, 0.128, 0.81, Qt.Key_Left],
-            [0.125, 0.79, 0.2, 0.89, Qt.Key_Down],
-            [0.19, 0.68, 0.25, 0.80, Qt.Key_Right]
-        ] // portrait
+        //position in absolute value
+        //keyname, x,y,width, height left or right, key, image
+        property var buttonsPositions: [
+            ["L", 2.25, 21.25, 11, 5, "left", Qt.Key_A, "./img/LButton.png"],
+            ["R", 2.25, 21.25, 11, 5, "right", Qt.Key_S, "./img/RButton.png"],
+            ["A", 2.5, 5.5, 6.5, 6.5, "right", Qt.Key_Z, "./img/AButton.png"],
+            ["B", 9, 3, 6.5, 6.5, "right", Qt.Key_X, "./img/BButton.png"],
+            ["Start", 19, 3, 3.5, 3.5, "right", Qt.Key_Return, "./img/circleButton.png"],
+            ["Select", 24.5, 3, 3.5, 3.5, "right", Qt.Key_Backspace, "./img/circleButton.png"],
+            ["Direct", 3.5, 5, 12, 12, "left", 0, "./img/directionButtons.png"]
+        ]
+        property var directRatio: 0.31;
         property var lastKeyStatus: [false, false, false, false, false, false, false, false, false, false]
 
         MultiPointTouchArea {
@@ -87,86 +74,101 @@ Page {
                 for (var i in buttonBackground.lastKeyStatus) {
                     var pressed = false;
                     for (var j in touchPoints) {
-                        if (touchPoints[j].x / width > buttonBackground.keyMap[i][0] &&  touchPoints[j].x / width < buttonBackground.keyMap[i][2] && touchPoints[j].y / height > buttonBackground.keyMap[i][1] && touchPoints[j].y / height < buttonBackground.keyMap[i][3])
-                            pressed = true;
-                    }
-                    if (pressed != buttonBackground.lastKeyStatus[i]) {
-                        if (pressed) {
-                            iwindow.on_key_press_event(buttonBackground.keyMap[i][4]);
+                        if (i < 6) {
+                            if (buttonBackground.buttonsPositions[i][5] == "left") {
+                                if (mouse.x > units.gu(buttonBackground.buttonsPositions[i][1])
+                                        && mouse.x < units.gu(buttonBackground.buttonsPositions[i][1]) + units.gu(buttonBackground.buttonsPositions[i][3])
+                                        && mouse.y > height - units.gu(buttonBackground.buttonsPositions[i][2]) - units.gu(buttonBackground.buttonsPositions[i][4])
+                                        && mouse.y < height - units.gu(buttonBackground.buttonsPositions[i][2])) {
+                                    pressed = true
+                                }
+                            } else {
+                                //should be right
+                                if (mouse.x > width - units.gu(buttonBackground.buttonsPositions[i][1]) - units.gu(buttonBackground.buttonsPositions[i][3])
+                                        && mouse.x < width - units.gu(buttonBackground.buttonsPositions[i][1])
+                                        && mouse.y > height - units.gu(buttonBackground.buttonsPositions[i][2]) - units.gu(buttonBackground.buttonsPositions[i][4])
+                                        && mouse.y < height - units.gu(buttonBackground.buttonsPositions[i][2])) {
+                                    pressed = true;
+                                }
+                            }
+                            if (pressed != buttonBackground.lastKeyStatus[i]) {
+                                if (pressed) {
+                                    iwindow.on_key_press_event(buttonBackground.buttonsPositions[i][7]);
+                                } else {
+                                    iwindow.on_key_release_event(buttonBackground.buttonsPositions[i][7]);
+                                }
+                                buttonBackground.lastKeyStatus[i] = pressed;
+                            }
                         } else {
-                            iwindow.on_key_release_event(buttonBackground.keyMap[i][4]);
+                            //Direction Button
+                            var directButtonWidth = units.gu(buttonBackground.buttonsPositions[6][3]);
+                            var directButtonHeight = units.gu(buttonBackground.buttonsPositions[6][4]);
+                            var directButtonX = units.gu(buttonBackground.buttonsPositions[6][1]);
+                            var directButtonY = height - units.gu(buttonBackground.buttonsPositions[6][1]) - directButtonHeight;
+                            var directButtonPosition = [
+                                        [directButtonX + buttonBackground.directRatio * directButtonWidth,
+                                         directButtonX + (1 - buttonBackground.directRatio) * directButtonWidth,
+                                         directButtonY,
+                                         directButtonY + buttonBackground.directRatio * directButtonHeight,
+                                         Qt.Key_Up],
+                                        [directButtonX,
+                                         directButtonX + buttonBackground.directRatio * directButtonWidth,
+                                         directButtonY + buttonBackground.directRatio * directButtonHeight,
+                                         directButtonY + (1 - buttonBackground.directRatio) * directButtonHeight,
+                                         Qt.Key_Left],
+                                        [directButtonX + buttonBackground.directRatio * directButtonWidth,
+                                         directButtonX + (1 - buttonBackground.directRatio) * directButtonWidth,
+                                         directButtonY + (1 - buttonBackground.directRatio) * directButtonHeight,
+                                         directButtonY + directButtonHeight,
+                                         Qt.Key_Down],
+                                        [directButtonX + (1 - buttonBackground.directRatio) * directButtonWidth,
+                                         directButtonX + directButtonWidth,
+                                         directButtonY + buttonBackground.directRatio * directButtonHeight,
+                                         directButtonY + (1 - buttonBackground.directRatio) * directButtonHeight,
+                                         Qt.Key_Right]
+                                    ]
+                            if (mouse.x > directButtonPosition[i - 6][0]
+                                    && mouse.x < directButtonPosition[i - 6][1]
+                                    && mouse.y > directButtonPosition[i - 6][2]
+                                    && mouse.y < directButtonPosition[i - 6][3]) {
+                                pressed = true;
+                            }
+                            if (pressed != buttonBackground.lastKeyStatus[i]) {
+                                if (pressed) {
+                                    iwindow.on_key_press_event(directButtonPosition[i - 6][4]);
+                                } else {
+                                    iwindow.on_key_release_event(directButtonPosition[i - 6][4]);
+                                }
+                                buttonBackground.lastKeyStatus[i] = pressed;
+                            }
                         }
-                        buttonBackground.lastKeyStatus[i] = pressed;
                     }
                 }
             }
-        }
-//        Repeater {
-//            model: buttonBackground.landscapeKeyMap
-//            delegate: Rectangle {
-//                x: buttonBackground.width * modelData[0]
-//                y: buttonBackground.height * modelData[1]
-//                width: buttonBackground.width * (modelData[2] - modelData[0])
-//                height: buttonBackground.height * (modelData[3] - modelData[1])
-//                color: "green"
-//            }
-//        }
 
-//        MouseArea {
-//            anchors.fill: parent
-//            onClicked: {
-//                console.log(mouse.x / width + " " + mouse.y / height)
-//            }
-//        }
+            //        MouseArea {
+            //            anchors.fill: parent
+            //            onClicked: {
+            //                console.log(mouse.x / units.gu(1) + " " + (width - mouse.x) / units.gu(1) + " " + (height - mouse.y) / units.gu(1))
+            //             }
+            //      }
+        }
 
-        Image {
-            source: "./img/LButton.png"
-            x: buttonBackground.keyMap[0][0] * parent.width
-            y: buttonBackground.keyMap[0][1] * parent.height
-            width: (buttonBackground.keyMap[0][2] - buttonBackground.keyMap[0][0]) * parent.width
-            height: (buttonBackground.keyMap[0][3] - buttonBackground.keyMap[0][1]) * parent.height
-        }
-        Image {
-            source: "./img/RButton.png"
-            x: buttonBackground.keyMap[1][0] * parent.width
-            y: buttonBackground.keyMap[1][1] * parent.height
-            width: (buttonBackground.keyMap[1][2] - buttonBackground.keyMap[1][0]) * parent.width
-            height: (buttonBackground.keyMap[1][3] - buttonBackground.keyMap[1][1]) * parent.height
-        }
-        Image {
-            source: "./img/AButton.png"
-            x: buttonBackground.keyMap[2][0] * parent.width
-            y: buttonBackground.keyMap[2][1] * parent.height
-            width: (buttonBackground.keyMap[2][2] - buttonBackground.keyMap[2][0]) * parent.width
-            height: (buttonBackground.keyMap[2][3] - buttonBackground.keyMap[2][1]) * parent.height
-        }
-        Image {
-            source: "./img/BButton.png"
-            x: buttonBackground.keyMap[3][0] * parent.width
-            y: buttonBackground.keyMap[3][1] * parent.height
-            width: (buttonBackground.keyMap[3][2] - buttonBackground.keyMap[3][0]) * parent.width
-            height: (buttonBackground.keyMap[3][3] - buttonBackground.keyMap[3][1]) * parent.height
-        }
-        Image {
-            source: "./img/circleButton.png"
-            x: buttonBackground.keyMap[4][0] * parent.width
-            y: buttonBackground.keyMap[4][1] * parent.height
-            width: (buttonBackground.keyMap[4][2] - buttonBackground.keyMap[4][0]) * parent.width
-            height: (buttonBackground.keyMap[4][3] - buttonBackground.keyMap[4][1]) * parent.height
-        }
-        Image {
-            source: "./img/circleButton.png"
-            x: buttonBackground.keyMap[5][0] * parent.width
-            y: buttonBackground.keyMap[5][1] * parent.height
-            width: (buttonBackground.keyMap[5][2] - buttonBackground.keyMap[5][0]) * parent.width
-            height: (buttonBackground.keyMap[5][3] - buttonBackground.keyMap[5][1]) * parent.height
-        }
-        Image {
-            source: "./img/directionButtons.png"
-            x: buttonBackground.keyMap[7][0] * parent.width
-            y: buttonBackground.keyMap[6][1] * parent.height
-            width: (buttonBackground.keyMap[9][2] - buttonBackground.keyMap[7][0]) * parent.width
-            height: (buttonBackground.keyMap[8][3] - buttonBackground.keyMap[6][1]) * parent.height
+        Repeater {
+            model: buttonBackground.buttonsPositions
+            delegate: Image {
+                source: model.modelData[7]
+                anchors {
+                    bottom: parent.bottom
+                    bottomMargin:  units.gu(model.modelData[2])
+                    left: model.modelData[5] == "left" ? parent.left : undefined
+                    right: model.modelData[5] == "right" ? parent.right : undefined
+                    leftMargin: model.modelData[5] == "left" ? units.gu(model.modelData[1]) : undefined
+                    rightMargin: model.modelData[5] == "right" ? units.gu(model.modelData[1]) : undefined
+                }
+                width: units.gu(model.modelData[3])
+                height: units.gu(model.modelData[4])
+            }
         }
     }
     tools: ToolbarItems {
@@ -180,15 +182,16 @@ Page {
                 }
             }
         }
-//        ToolbarButton {
-//            action: Action {
-//                text: iwindow.paused ? "Resume" : "Pause"
-//                iconSource: iwindow.paused ? "./img/media-playback-start.svg" : "./img/media-playback-pause.svg"
-//                onTriggered: {
-//                    iwindow.paused = !iwindow.paused;
-//                }
-//            }
-//        }
+        ToolbarButton {
+            action: Action {
+                text: "Settings"
+                iconSource: "./img/settings.svg"
+                onTriggered: {
+                    pageStack.push(Qt.resolvedUrl("SettingPage.qml"));
+                }
+            }
+        }
+
         ToolbarButton {
             action: Action {
                 text: "Save Slot"
