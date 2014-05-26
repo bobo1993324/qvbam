@@ -67,12 +67,14 @@ Page {
         ]
         property var directRatio: 0.31;
         property var lastKeyStatus: [false, false, false, false, false, false, false, false, false, false]
+		property var buttonKeys: [Qt.Key_A, Qt.Key_S, Qt.Key_Z, Qt.Key_X, Qt.Key_Return, Qt.Key_Backspace, Qt.Key_Up, Qt.Key_Left, Qt.Key_Down, Qt.Key_Right]
 
         MultiPointTouchArea {
             anchors.fill: parent
             onTouchUpdated: {
                 for (var i in buttonBackground.lastKeyStatus) {
                     var pressed = false;
+					var buttonKey = buttonBackground.buttonKeys[i];
                     for (var j in touchPoints) {
                         if (i < 6) {
                             if (buttonBackground.buttonsPositions[i][5] == "left") {
@@ -91,15 +93,7 @@ Page {
                                     pressed = true;
                                 }
                             }
-                            if (pressed != buttonBackground.lastKeyStatus[i]) {
-                                if (pressed) {
-                                    iwindow.on_key_press_event(buttonBackground.buttonsPositions[i][6]);
-                                } else {
-                                    iwindow.on_key_release_event(buttonBackground.buttonsPositions[i][6]);
-                                }
-                                buttonBackground.lastKeyStatus[i] = pressed;
-                            }
-                        } else {
+                       } else {
                             //Direction Button
                             var directButtonWidth = units.gu(buttonBackground.buttonsPositions[6][3]);
                             var directButtonHeight = units.gu(buttonBackground.buttonsPositions[6][4]);
@@ -133,18 +127,17 @@ Page {
                                     && touchPoints[j].y < directButtonPosition[i - 6][3]) {
                                 pressed = true;
                             }
-                            if (pressed != buttonBackground.lastKeyStatus[i]) {
-                                if (pressed) {
-                                    iwindow.on_key_press_event(directButtonPosition[i - 6][4]);
-                                } else {
-                                    iwindow.on_key_release_event(directButtonPosition[i - 6][4]);
-                                }
-                                buttonBackground.lastKeyStatus[i] = pressed;
-                            }
                         }
                     }
+                    if (pressed != buttonBackground.lastKeyStatus[i]) {
+                       if (pressed) {
+                           iwindow.on_key_press_event(buttonKey);
+                       } else {
+                           iwindow.on_key_release_event(buttonKey);
+                       }
+                       buttonBackground.lastKeyStatus[i] = pressed;
+                    }
                 }
-				console.log(buttonBackground.lastKeyStatus);
             }
 
             //        MouseArea {
