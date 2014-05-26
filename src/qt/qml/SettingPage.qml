@@ -10,9 +10,10 @@ Page {
             text: "Enable Sound"
             control: Switch {
                 id: enableSoundSwitch
-                checked: true
+                checked: settings.enableSound
                 onCheckedChanged: {
-                    iwindow.config.mute = !checked
+                    settings.enableSound = checked;
+                    settings.save();
                 }
             }
         }
@@ -22,6 +23,7 @@ Page {
                 checked: settings.configShowSpeed
                 onCheckedChanged: {
                     settings.configShowSpeed = checked;
+                    settings.save();
                 }
             }
         }
@@ -31,6 +33,7 @@ Page {
                 checked: settings.configShowFrameSkip
                 onCheckedChanged: {
                     settings.configShowFrameSkip = checked;
+                    settings.save();
                 }
             }
         }

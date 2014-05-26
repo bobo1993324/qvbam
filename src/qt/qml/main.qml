@@ -6,6 +6,7 @@ MainView {
     height: units.gu(70)
     backgroundColor: "#4E2865"
     automaticOrientation: true
+    applicationName: "com.ubuntu.developer.bobo1993324.qvbam"
     PageStack {
         id: pageStack
         Component.onCompleted: {
