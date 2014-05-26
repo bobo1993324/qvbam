@@ -5,12 +5,19 @@ import Ubuntu.Components.ListItems 0.1 as ListItems
 import Ubuntu.Components.Popups 0.1
 Page {
     property string slotAction
-    property bool isPortrait: width * 1.4 < height
-
+    property bool showPad: {
+        var screenheight = Math.min(width / 240, height / 160) * 160
+        if (height - screenheight > buttonBackground.height) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     Rectangle {
+        id: screenContainer
         anchors {
             top: parent.top
-            bottom: isPortrait ? buttonBackground.top : parent.bottom
+            bottom: showPad ? buttonBackground.top : parent.bottom
         }
         width: parent.width
         color: "black"
@@ -48,11 +55,11 @@ Page {
     Rectangle {
         id: buttonBackground
         width: parent.width
-        height: width * 434 / 725
+        height: units.gu(28)
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        color: isPortrait ? "#4E2865" : "transparent"
-        opacity: isPortrait ? 1.0 : 0.5
+        color: showPad ? "#4E2865" : "transparent"
+        opacity: showPad ? 1.0 : 0.5
         //[startx, starty, endx, endy, key]
         //position in absolute value
         //keyname, x,y,width, height left or right, key, image
