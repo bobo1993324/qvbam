@@ -23,7 +23,7 @@ Page {
         color: "black"
         ScreenArea {
             anchors.centerIn: parent
-            property int scale : Math.min(parent.width / 240, parent.height / 160)
+            property int scale : settings.displayScale == 0 ? Math.min(parent.width / 240, parent.height / 160): settings.displayScale
             width: 241 * scale
             height: 160 * scale
             id: sa
