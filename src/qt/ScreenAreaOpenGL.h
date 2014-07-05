@@ -1,18 +1,19 @@
-#ifndef SQUIRCLE_H
-#define SQUIRCLE_H
-
-#include <QtQuick/QQuickItem>
-#include <QtGui/QOpenGLShaderProgram>
-#include <QSGSimpleRectNode>
-#include <QSGSimpleTextureNode>
-class Squircle : public QQuickItem
+#include <QQuickPaintedItem>
+#include <QDebug>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
+class ScreenAreaOpenGL : public QQuickItem
 {
     Q_OBJECT
 
 public:
-    Squircle();
-    virtual QSGNode * updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
+    ScreenAreaOpenGL();
+    ~ScreenAreaOpenGL();
+private slots:
+    void handleWindowChanged(QQuickWindow *win);
+    void paint();
 
+private:
+    QOpenGLShaderProgram * m_program;
+    QOpenGLTexture * m_texture;
 };
-
-#endif // SQUIRCLE_H

@@ -5,10 +5,9 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <csignal>
-#include "ScreenArea.h"
+#include "ScreenAreaOpenGL.h"
 #include "window.h"
 #include "CustomQQuickView.h"
-#include "ScreenAreaOpenGL.h"
 #include "FilesModel.h"
 #include "QGameSlot.h"
 Window * w;
@@ -27,17 +26,14 @@ int main(int argc, char ** argv) {
     view = new CustomQQuickView();
 
     w = new Window();
-//    w->bLoadROM("./1.gba");
     FilesModel romsModel;
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->engine()->rootContext()->setContextProperty("romsModel", &romsModel);
     view->engine()->rootContext()->setContextProperty("iwindow", w);
-    qmlRegisterType<ScreenArea>("QVBA", 0, 1, "ScreenArea");
-    //qmlRegisterType<Squircle>("QVBA", 0, 1, "ScreenArea");
+    qmlRegisterType<ScreenAreaOpenGL>("QVBA", 0, 1, "ScreenArea");
     qmlRegisterUncreatableType<Window>("QVBA", 0, 1, "WINDOW", "hehe");
     qmlRegisterUncreatableType<QGameSlot>("QVBA", 0, 1, "QGameSlot", "hehe");
-
-
+    QObject::connect(w, SIGNAL(sDrawScreen()), view, SLOT(update()));
     view->setSource(QUrl::fromLocalFile("qml/main.qml"));
     view->show();
     return a.exec();

@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QVBA 0.1
 import Ubuntu.Components 0.1
 MainView {
+    id: mainView
     width: units.gu(48)
     height: units.gu(70)
     backgroundColor: "#4E2865"
@@ -16,11 +17,6 @@ MainView {
 
     Settings {
         id: settings
-    }
-
-    PlayPage {
-        id: playPage
-        visible: false
     }
     focus: true
     Keys.onPressed: {

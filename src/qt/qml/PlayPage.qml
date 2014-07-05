@@ -21,19 +21,6 @@ Page {
         }
         width: parent.width
         color: "black"
-        ScreenArea {
-            anchors.centerIn: parent
-            property int scale : settings.displayScale == 0 ? Math.min(parent.width / 240, parent.height / 160): settings.displayScale
-            width: 241 * scale
-            height: 160 * scale
-            id: sa
-            Connections {
-                target: iwindow
-                onSDrawScreen: {
-                    sa.update()
-                }
-            }
-        }
         Label {
             id: speedLabel
             anchors {
@@ -51,6 +38,14 @@ Page {
             visible: settings.configShowFrameSkip
             text: "Frame Skip: " + iwindow.frameSkip
         }
+    }
+    ScreenArea {
+        anchors.centerIn: parent
+        property int scale : settings.displayScale == 0 ? Math.min(parent.width / 240, parent.height / 160): settings.displayScale
+        width: 241 * scale
+        height: 160 * scale
+        property int positionFromLeft : (parent.width - width) / 2
+        property int positionFromBottom : parent.height - screenContainer.height/2 - height/ 2
     }
     Rectangle {
         id: buttonBackground
