@@ -2,7 +2,8 @@
 #include <QDebug>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
-class ScreenAreaOpenGL : public QQuickItem
+#include <QOpenGLFunctions>
+class ScreenAreaOpenGL : public QQuickItem, protected QOpenGLFunctions
 {
     Q_OBJECT
 
