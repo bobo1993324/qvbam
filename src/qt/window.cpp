@@ -140,7 +140,7 @@ bool Window::bLoadROM(const std::string &_rsFile) {
     emulating = 1;
     m_bWasEmulating = false;
 
-    //    vApplyConfigSoundSampleRate();
+    vApplyConfigSoundSampleRate();
 
     vUpdateGameSlots();
     //    vHistoryAdd(_rsFile);
@@ -637,4 +637,10 @@ void Window::vOnLoadGame(int _iSlot)
     m_stEmulator.emuReadState(m_astGameSlot[i].m_sFile.c_str());
     setPaused(false);
   }
+}
+
+void Window::vApplyConfigSoundSampleRate() {
+    //TODO configure this
+    long iSoundSampleRate = 11025;
+    soundSetSampleRate(iSoundSampleRate);
 }
