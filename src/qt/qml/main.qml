@@ -7,6 +7,7 @@ MainView {
     backgroundColor: "#4E2865"
     automaticOrientation: true
     applicationName: "com.ubuntu.developer.bobo1993324.qvbam"
+    useDeprecatedToolbar: false
     PageStack {
         id: pageStack
         Component.onCompleted: {

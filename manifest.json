@@ -1,7 +1,7 @@
 {
     "name": "com.ubuntu.developer.bobo1993324.qvbam",
     "description": "gba emulator",
-    "framework": "ubuntu-sdk-14.04-qml-dev1",
+    "framework": "ubuntu-sdk-14.10-qml-dev3",
     "architecture": "armhf",
     "title": "QVBA-M",
     "hooks": {

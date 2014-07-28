@@ -27,13 +27,11 @@ int main(int argc, char ** argv) {
     view = new CustomQQuickView();
 
     w = new Window();
-//    w->bLoadROM("./1.gba");
     FilesModel romsModel;
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->engine()->rootContext()->setContextProperty("romsModel", &romsModel);
     view->engine()->rootContext()->setContextProperty("iwindow", w);
     qmlRegisterType<ScreenArea>("QVBA", 0, 1, "ScreenArea");
-    //qmlRegisterType<Squircle>("QVBA", 0, 1, "ScreenArea");
     qmlRegisterUncreatableType<Window>("QVBA", 0, 1, "WINDOW", "hehe");
     qmlRegisterUncreatableType<QGameSlot>("QVBA", 0, 1, "QGameSlot", "hehe");
 

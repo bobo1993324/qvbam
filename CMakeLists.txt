@@ -73,7 +73,7 @@ endif( ENABLE_ASM_SCALERS )
 FIND_PACKAGE ( ZLIB REQUIRED )
 FIND_PACKAGE ( PNG REQUIRED )
 FIND_PACKAGE ( OpenGL REQUIRED )
-FIND_PACKAGE ( SDL REQUIRED )
+#FIND_PACKAGE ( SDL REQUIRED )
 
 if( ENABLE_LINK )
     FIND_PACKAGE ( SFML REQUIRED )
@@ -82,7 +82,7 @@ endif( ENABLE_LINK )
 SET(VBAMCORE_LIBS
     vbamcore
     fex
-    ${SDL_LIBRARY}
+#    ${SDL_LIBRARY}
     ${SFML_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${ZLIB_LIBRARY}
@@ -494,16 +494,17 @@ IF(ENABLE_QT)
     )
     TARGET_LINK_LIBRARIES (
         qvbam
-		vbamcore
-	    fex
-	    "${SDL_PATH}/build/.libs/libSDL.a"
-		"${SDL_PATH}/build/.libs/libSDLmain.a"
-		"-ldl"
-	    "-pthread"
-	    ${SFML_LIBRARY}
-	    ${OPENGL_LIBRARIES}
-	    ${ZLIB_LIBRARY}
-	    ${PNG_LIBRARY}
+        vbamcore
+        fex
+        "${SDL_PATH}/build/.libs/libSDL.a"
+        "${SDL_PATH}/build/.libs/libSDLmain.a"
+        "-ldl"
+        "-lts"
+        "-pthread"
+        ${SFML_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${ZLIB_LIBRARY}
+        ${PNG_LIBRARY}
         #${VBAMCORE_LIBS}
     )
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/qt/qml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

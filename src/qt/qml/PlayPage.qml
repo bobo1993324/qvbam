@@ -1,8 +1,8 @@
 import QtQuick 2.0
 import QVBA 0.1
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItems
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0 as ListItems
+import Ubuntu.Components.Popups 1.0
 Page {
     property string slotAction
     property bool showPad: {
@@ -172,44 +172,70 @@ Page {
             }
         }
     }
-    tools: ToolbarItems {
-        back: ToolbarButton {
-            action: Action {
-                text: "Close"
-                iconSource: "./img/close.svg"
-                onTriggered: {
-                    pageStack.pop();
-                    iwindow.vOnFileClose();
-                }
-            }
+
+    Panel {
+        id: tools
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
         }
-        ToolbarButton {
-            action: Action {
-                text: "Settings"
-                iconSource: "./img/settings.svg"
-                onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("SettingPage.qml"));
-                }
-            }
+        height: units.gu(8)
+        Component.onCompleted: {
+            tools.open();
+            closeToolbarTimer.start();
+        }
+        Rectangle {
+            anchors.fill: parent
+            color: "white"
         }
 
-        ToolbarButton {
-            action: Action {
-                text: "Save Slot"
-                iconSource: "./img/save.svg"
-                onTriggered: {
-                    slotAction = "save";
-                    PopupUtils.open(slotSheet)
+        Timer {
+            id: closeToolbarTimer
+            interval: 2000
+            repeat: false
+            onTriggered: tools.close()
+        }
+
+        ToolbarItems {
+            back: ToolbarButton {
+                action: Action {
+                    text: "Close"
+                    iconSource: "./img/close.svg"
+                    onTriggered: {
+                        pageStack.pop();
+                        iwindow.vOnFileClose();
+                    }
                 }
             }
-        }
-        ToolbarButton {
-            action: Action {
-                text: "Load Slot"
-                iconSource: "./img/keyboard-caps.svg"
-                onTriggered: {
-                    slotAction = "load";
-                    PopupUtils.open(slotSheet)
+            ToolbarButton {
+                action: Action {
+                    text: "Settings"
+                    iconSource: "./img/settings.svg"
+                    onTriggered: {
+                        pageStack.push(Qt.resolvedUrl("SettingPage.qml"));
+                    }
+                }
+            }
+
+            ToolbarButton {
+                action: Action {
+                    text: "Save Slot"
+                    iconSource: "./img/save.svg"
+                    onTriggered: {
+                        slotAction = "save";
+                        PopupUtils.open(slotSheet)
+                    }
+                }
+            }
+            ToolbarButton {
+                action: Action {
+                    text: "Load Slot"
+                    iconSource: "./img/keyboard-caps.svg"
+                    onTriggered: {
+                        slotAction = "load";
+                        PopupUtils.open(slotSheet)
+                    }
                 }
             }
         }
