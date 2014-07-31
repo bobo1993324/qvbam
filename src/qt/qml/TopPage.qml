@@ -24,7 +24,10 @@ Tabs {
                     confirmRemoval: true;
                     onClicked: {
                         iwindow.bLoadRomInQML(model.modelData)
-                        pageStack.push(Qt.resolvedUrl("PlayPage.qml"));
+                        pageStack.push(Qt.resolvedUrl("PlayPage.qml"))
+                    }
+                    onItemRemoved: {
+                        romsModel.removeFile(model.modelData)
                     }
                 }
             }

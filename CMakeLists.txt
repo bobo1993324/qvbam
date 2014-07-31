@@ -375,6 +375,9 @@ SET(SRC_QT
     src/qt/QGameSlot.cpp
 )
 
+
+file(GLOB UBUNTU_QMLS ${CMAKE_SOURCE_DIR}/src/qt/qml/*.qml)
+
 if( ENABLE_DEBUGGER )
     SET(SRC_DEBUGGER
         src/gba/armdis.cpp
@@ -509,6 +512,12 @@ IF(ENABLE_QT)
     )
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/qt/qml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     qt5_use_modules(qvbam Core Quick Gui Multimedia)
+
+    add_custom_target(
+        ubuntu_Files
+        ALL SOURCES
+        ${UBUNTU_QMLS}
+    )
 
 endif(ENABLE_QT)
 
