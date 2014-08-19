@@ -18,15 +18,17 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1 as Popups
-import Ubuntu.Content 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.Popups 1.0 as Popups
+import Ubuntu.Content 1.0
 
 Component {
     Popups.PopupBase {
         id: picker
         property var activeTransfer
         property var selectedItems
+
+        property color oldColor
 
         Rectangle {
             anchors.fill: parent
@@ -49,6 +51,7 @@ Component {
                 }
 
                 onCancelPressed: {
+                    mainView.backgroundColor = picker.oldColor
                     PopupUtils.close(picker)
                 }
             }
@@ -67,8 +70,14 @@ Component {
             id: closeTimer
             interval: 1000
             repeat: false
-            onTriggered:
+            onTriggered: {
+                mainView.backgroundColor = picker.oldColor
                 PopupUtils.close(picker)
+            }
+        }
+        Component.onCompleted: {
+            picker.oldColor = mainView.backgroundColor;
+            mainView.backgroundColor = "white"
         }
     }
 }
