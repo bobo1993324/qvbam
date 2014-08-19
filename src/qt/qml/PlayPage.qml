@@ -173,6 +173,31 @@ Page {
         }
     }
 
+    MouseArea {
+        id: toolbarMask
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+            bottom: tools.top
+        }
+        enabled: tools.opened
+        onClicked: tools.close()
+    }
+
+    Icon {
+        name: "contextual-menu"
+        opacity: 0.5
+        width: units.gu(5)
+        height: width
+        x: units.gu(2)
+        y: units.gu(2)
+        MouseArea {
+            anchors.fill: parent
+            onClicked: tools.open()
+        }
+    }
+
     Panel {
         id: tools
         anchors {
@@ -259,6 +284,7 @@ Page {
                             iwindow.vOnLoadGame(model.index + 1);
                         }
                         PopupUtils.close(sheet);
+                        tools.close();
                     }
                 }
             }

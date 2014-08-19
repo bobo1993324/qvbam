@@ -28,10 +28,12 @@ Item {
     }
     function load() {
         var settings = aDocument.contents;
-        enableSound = settings.enableSound;
-        configShowSpeed = settings.configShowSpeed;
-        configShowFrameSkip = settings.configShowFrameSkip;
-        displayScale = settings.displayScale;
+        if (settings.enableSound !== undefined) {
+            enableSound = settings.enableSound;
+            configShowSpeed = settings.configShowSpeed;
+            configShowFrameSkip = settings.configShowFrameSkip;
+            displayScale = settings.displayScale;
+        }
     }
     function save() {
         var settings = aDocument.contents;
