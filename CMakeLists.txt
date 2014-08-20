@@ -502,7 +502,7 @@ IF(ENABLE_QT)
         "${SDL_PATH}/build/.libs/libSDL.a"
         "${SDL_PATH}/build/.libs/libSDLmain.a"
         "-ldl"
-        "-lts"
+        #"-lts"
         "-pthread"
         ${SFML_LIBRARY}
         ${OPENGL_LIBRARIES}
