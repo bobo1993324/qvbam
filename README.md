@@ -2,7 +2,7 @@
 
 Based on the original app <github.com/bobo1993324/qvbam> created by bobo1993324 <github.com/bobo1993324>
 UNOFFICIAL vbam fork.
-This app is an adaptation of the gba emulator VBAM designed for Ubuntu Touch
+This app is an adaptation designed for ubuntu touch of the gba emulator VBAM.
 vbam website: http://vba-m.com/
 
 ## Build
