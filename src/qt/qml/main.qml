@@ -6,7 +6,7 @@ MainView {
     id: mainView
     width: units.gu(48)
     height: units.gu(70)
-    backgroundColor: "#4E2865"
+    backgroundColor: "#ffffff"
     automaticOrientation: true
     applicationName: "emanuelesorce.qvbam"
     PageStack {
