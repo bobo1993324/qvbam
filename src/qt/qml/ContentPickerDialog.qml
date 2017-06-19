@@ -19,13 +19,13 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.0 as Popups
-import Ubuntu.Content 1.0
+import Ubuntu.Components.Popups 1.3 as Popups
+import Ubuntu.Content 1.3
 
 Component {
     Popups.PopupBase {
         id: picker
-        property var activeTransfer
+        property var activeTransfer	
         property var selectedItems
 
         property color oldColor
