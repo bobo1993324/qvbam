@@ -1,7 +1,7 @@
 /*
  * Copied from webbrowser app
  * Copyright 2014 Canonical Ltd.
- *
+ * 
  * This file is part of webbrowser-app.
  *
  * webbrowser-app is free software; you can redistribute it and/or modify
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
 import QtQuick 2.4
@@ -45,6 +45,7 @@ Component {
                 contentType: ContentType.All
                 handler: ContentHandler.Source
                 onPeerSelected: {
+                    peer.contentType = ContentType.All
                     peer.selectionType = ContentTransfer.Single
                     picker.activeTransfer = peer.request()
                     stateChangeConnection.target = picker.activeTransfer
@@ -79,5 +80,5 @@ Component {
             picker.oldColor = mainView.backgroundColor;
             mainView.backgroundColor = "white"
         }
-    }
+    }	
 }

@@ -24,7 +24,7 @@ Window::Window() :
     struct passwd *pw = getpwuid(getuid());
     const char *homedir = pw->pw_dir;
     m_sUserDataDir = (QString(homedir)
-                      + QString("/.local/share/com.ubuntu.developer.bobo1993324.qvbam/")
+                      + QString("/.local/share/emanuelesorce.qvbam/")
                       ).toStdString();
     QDir qDir(QString::fromStdString(m_sUserDataDir));
     if (!qDir.exists()) {
@@ -644,3 +644,4 @@ void Window::vApplyConfigSoundSampleRate() {
     long iSoundSampleRate = 11025;
     soundSetSampleRate(iSoundSampleRate);
 }
+	
