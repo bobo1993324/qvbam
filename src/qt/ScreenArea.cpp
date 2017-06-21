@@ -1,7 +1,6 @@
 #include "ScreenArea.h"
 
 extern u8 *pix;
-extern Window * w;
 
 ScreenArea::ScreenArea() {
     m_image = new QImage(pix, 241, 160, QImage::Format_RGB32);

@@ -366,7 +366,6 @@ SET(SRC_QT
     src/qt/window.cpp
     src/qt/system.cpp
     src/sdl/inputSDL.cpp
-    src/qt/ScreenArea.cpp
     src/qt/CustomQQuickView.cpp
     src/qt/ScreenAreaOpenGL.cpp
     src/qt/FilesModel.cpp
