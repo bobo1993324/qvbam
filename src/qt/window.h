@@ -124,6 +124,7 @@ private:
     void vApplyConfigFrameskip();
     void vOnFilePauseToggled();
     void vUpdateGameSlots();
+    void vApplyConfigSoundSampleRate();
 
 };
 #endif

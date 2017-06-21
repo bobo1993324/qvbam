@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=QVBA-M
+Name=QVBAM
 Exec=./qvbam
 Icon=./logo.png
 Terminal=false

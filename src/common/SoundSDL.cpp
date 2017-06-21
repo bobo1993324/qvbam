@@ -99,10 +99,9 @@ void SoundSDL::write(u16 * finalWave, int length)
 	SDL_mutexV(_mutex);
 }
 
-
 bool SoundSDL::init(long sampleRate)
 {
-	SDL_AudioSpec audio;
+    SDL_AudioSpec audio;
 	audio.freq = sampleRate;
 	audio.format = AUDIO_S16SYS;
 	audio.channels = 2;
