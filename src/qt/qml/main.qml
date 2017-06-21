@@ -1,13 +1,14 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QVBA 0.1
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.3
+
 MainView {
     id: mainView
     width: units.gu(48)
     height: units.gu(70)
-    backgroundColor: "#4E2865"
+    backgroundColor: UbuntuColors.porcelain
     automaticOrientation: true
-    applicationName: "com.ubuntu.developer.bobo1993324.qvbam"
+    applicationName: "emanuelesorce.qvbam"
     PageStack {
         id: pageStack
         Component.onCompleted: {

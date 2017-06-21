@@ -1,8 +1,8 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QVBA 0.1
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItems
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.3
+import Ubuntu.Components.ListItems 1.3 as ListItems
+import Ubuntu.Components.Popups 1.3
 Page {
     property string slotAction
     property bool showPad: {
@@ -167,44 +167,95 @@ Page {
             }
         }
     }
-    tools: ToolbarItems {
-        back: ToolbarButton {
-            action: Action {
-                text: "Close"
-                iconSource: "./img/close.svg"
-                onTriggered: {
-                    pageStack.pop();
-                    iwindow.vOnFileClose();
-                }
-            }
+
+    MouseArea {
+        id: toolbarMask
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+            bottom: tools.top
         }
-        ToolbarButton {
-            action: Action {
-                text: "Settings"
-                iconSource: "./img/settings.svg"
-                onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("SettingPage.qml"));
-                }
-            }
+        enabled: tools.opened
+        onClicked: tools.close()
+    }
+
+    Icon {
+        name: "contextual-menu"
+        opacity: 0.5
+        width: units.gu(5)
+        height: width
+        x: units.gu(2)
+        y: units.gu(2)
+        MouseArea {
+            anchors.fill: parent
+            onClicked: tools.open()
+        }
+    }
+
+    Panel {
+        id: tools
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.gu(8)
+        Component.onCompleted: {
+            tools.open();
+            closeToolbarTimer.start();
+        }
+        Rectangle {
+            anchors.fill: parent
+            color: "white"
         }
 
-        ToolbarButton {
-            action: Action {
-                text: "Save Slot"
-                iconSource: "./img/save.svg"
-                onTriggered: {
-                    slotAction = "save";
-                    PopupUtils.open(slotSheet)
+        Timer {
+            id: closeToolbarTimer
+            interval: 2000
+            repeat: false
+            onTriggered: tools.close()
+        }
+
+        ToolbarItems {
+            back: ToolbarButton {
+                action: Action {
+                    text: "Close"
+                    iconSource: "./img/close.svg"
+                    onTriggered: {
+                        pageStack.pop();
+                        iwindow.vOnFileClose();
+                    }
                 }
             }
-        }
-        ToolbarButton {
-            action: Action {
-                text: "Load Slot"
-                iconSource: "./img/keyboard-caps.svg"
-                onTriggered: {
-                    slotAction = "load";
-                    PopupUtils.open(slotSheet)
+            ToolbarButton {
+                action: Action {
+                    text: "Settings"
+                    iconSource: "./img/settings.svg"
+                    onTriggered: {
+                        pageStack.push(Qt.resolvedUrl("SettingPage.qml"));
+                    }
+                }
+            }
+
+            ToolbarButton {
+                action: Action {
+                    text: "Save Slot"
+                    iconSource: "./img/save.svg"
+                    onTriggered: {
+                        slotAction = "save";
+                        PopupUtils.open(slotSheet)
+                    }
+                }
+            }
+            ToolbarButton {
+                action: Action {
+                    text: "Load Slot"
+                    iconSource: "./img/keyboard-caps.svg"
+                    onTriggered: {
+                        slotAction = "load";
+                        PopupUtils.open(slotSheet)
+                    }
                 }
             }
         }
@@ -228,6 +279,7 @@ Page {
                             iwindow.vOnLoadGame(model.index + 1);
                         }
                         PopupUtils.close(sheet);
+                        tools.close();
                     }
                 }
             }

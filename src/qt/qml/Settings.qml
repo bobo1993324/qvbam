@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import U1db 1.0 as U1db
 Item {
     property bool enableSound: true
@@ -28,10 +28,12 @@ Item {
     }
     function load() {
         var settings = aDocument.contents;
-        enableSound = settings.enableSound;
-        configShowSpeed = settings.configShowSpeed;
-        configShowFrameSkip = settings.configShowFrameSkip;
-        displayScale = settings.displayScale;
+        if (settings.enableSound !== undefined) {
+            enableSound = settings.enableSound;
+            configShowSpeed = settings.configShowSpeed;
+            configShowFrameSkip = settings.configShowFrameSkip;
+            displayScale = settings.displayScale;
+        }
     }
     function save() {
         var settings = aDocument.contents;
